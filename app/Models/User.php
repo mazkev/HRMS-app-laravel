@@ -88,6 +88,21 @@ class User extends Authenticatable
         return $this->hasMany(EmployeeDocument::class);
     }
 
+    public function assets(): HasMany
+    {
+        return $this->hasMany(CompanyAsset::class);
+    }
+
+    public function loans(): HasMany
+    {
+        return $this->hasMany(EmployeeLoan::class);
+    }
+
+    public function trainings(): HasMany
+    {
+        return $this->hasMany(TrainingParticipant::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin_hr';

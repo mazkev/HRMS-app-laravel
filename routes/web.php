@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
@@ -10,11 +12,14 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\LeaveRequestController;
+use App\Http\Controllers\LoanController;
 use App\Http\Controllers\OvertimeController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PerformanceController;
+use App\Http\Controllers\RecruitmentController;
 use App\Http\Controllers\ReimbursementController;
 use App\Http\Controllers\ShiftController;
+use App\Http\Controllers\TrainingController;
 use Illuminate\Support\Facades\Route;
 
 // Public & Authentication Routes
@@ -49,6 +54,29 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin_hr'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
 
+        // Recruitment & ATS
+        Route::get('/recruitment', [RecruitmentController::class, 'index'])->name('recruitment.index');
+        Route::post('/recruitment/jobs', [RecruitmentController::class, 'storeJob'])->name('recruitment.jobs.store');
+        Route::patch('/recruitment/applications/{id}/status', [RecruitmentController::class, 'updateApplicationStatus'])->name('recruitment.applications.status');
+        Route::post('/recruitment/applications/{id}/convert', [RecruitmentController::class, 'convertToEmployee'])->name('recruitment.applications.convert');
+
+        // Asset Management
+        Route::get('/assets', [AssetController::class, 'adminIndex'])->name('assets.index');
+        Route::post('/assets', [AssetController::class, 'store'])->name('assets.store');
+        Route::patch('/assets/{id}/assign', [AssetController::class, 'assign'])->name('assets.assign');
+
+        // Loans & Kasbon Management
+        Route::get('/loans', [LoanController::class, 'adminIndex'])->name('loans.index');
+        Route::patch('/loans/{id}/approve', [LoanController::class, 'approve'])->name('loans.approve');
+        Route::patch('/loans/{id}/reject', [LoanController::class, 'reject'])->name('loans.reject');
+
+        // Training LMS Lite
+        Route::get('/trainings', [TrainingController::class, 'adminIndex'])->name('trainings.index');
+        Route::post('/trainings', [TrainingController::class, 'store'])->name('trainings.store');
+
+        // Security Audit Logs
+        Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('audit.index');
+
         // Employee Management
         Route::resource('employees', EmployeeController::class);
 
@@ -77,7 +105,7 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/overtimes/{id}/approve', [OvertimeController::class, 'approve'])->name('overtime.approve');
         Route::patch('/overtimes/{id}/reject', [OvertimeController::class, 'reject'])->name('overtime.reject');
 
-        // Reimbursements (Expense Claims)
+        // Reimbursements
         Route::get('/reimbursements', [ReimbursementController::class, 'adminIndex'])->name('reimbursements.index');
         Route::patch('/reimbursements/{id}/approve', [ReimbursementController::class, 'approve'])->name('reimbursements.approve');
         Route::patch('/reimbursements/{id}/reject', [ReimbursementController::class, 'reject'])->name('reimbursements.reject');
@@ -125,6 +153,17 @@ Route::middleware(['auth'])->group(function () {
         // Reimbursements
         Route::get('/reimbursements', [ReimbursementController::class, 'employeeIndex'])->name('reimbursements.index');
         Route::post('/reimbursements', [ReimbursementController::class, 'store'])->name('reimbursements.store');
+
+        // My Assets
+        Route::get('/assets', [AssetController::class, 'employeeIndex'])->name('assets.index');
+
+        // Loans / Kasbon
+        Route::get('/loans', [LoanController::class, 'employeeIndex'])->name('loans.index');
+        Route::post('/loans', [LoanController::class, 'store'])->name('loans.store');
+
+        // Trainings
+        Route::get('/trainings', [TrainingController::class, 'employeeIndex'])->name('trainings.index');
+        Route::post('/trainings/{id}/enroll', [TrainingController::class, 'enroll'])->name('trainings.enroll');
 
         // Performance Scorecard
         Route::get('/performance', [PerformanceController::class, 'employeeIndex'])->name('performance.index');

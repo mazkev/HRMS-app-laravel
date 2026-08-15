@@ -94,7 +94,7 @@
             </div>
             <div>
                 <h1 class="font-extrabold text-base text-slate-900 tracking-tight">PT MAJU</h1>
-                <p class="text-[11px] text-blue-600 font-bold tracking-wider uppercase">HR Enterprise Suite</p>
+                <p class="text-[11px] text-blue-600 font-bold tracking-wider uppercase">Tier-1 HR Enterprise</p>
             </div>
         </div>
 
@@ -131,6 +131,11 @@
                     <span>Klaim Reimbursement</span>
                 </a>
 
+                <a href="{{ route('admin.loans.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.loans.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-hand-holding-dollar w-4 text-center {{ request()->routeIs('admin.loans.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Pinjaman & Kasbon</span>
+                </a>
+
                 <a href="{{ route('admin.performance.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.performance.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-award w-4 text-center {{ request()->routeIs('admin.performance.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Penilaian Kinerja (KPI)</span>
@@ -147,7 +152,26 @@
                 </a>
 
                 <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    Informasi & Berkas
+                    Talenta & Aset
+                </div>
+
+                <a href="{{ route('admin.recruitment.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.recruitment.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-user-plus w-4 text-center {{ request()->routeIs('admin.recruitment.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Rekrutmen & ATS</span>
+                </a>
+
+                <a href="{{ route('admin.assets.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.assets.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-laptop w-4 text-center {{ request()->routeIs('admin.assets.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Inventaris Aset</span>
+                </a>
+
+                <a href="{{ route('admin.trainings.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.trainings.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-graduation-cap w-4 text-center {{ request()->routeIs('admin.trainings.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Pelatihan (LMS Lite)</span>
+                </a>
+
+                <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Informasi & Audit
                 </div>
 
                 <a href="{{ route('announcements.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('announcements.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -158,6 +182,11 @@
                 <a href="{{ route('documents.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('documents.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-folder-open w-4 text-center {{ request()->routeIs('documents.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Brankas Dokumen</span>
+                </a>
+
+                <a href="{{ route('admin.audit.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.audit.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-shield-halved w-4 text-center {{ request()->routeIs('admin.audit.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Audit Trail Log</span>
                 </a>
 
                 <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -175,7 +204,7 @@
                 </a>
 
                 <a href="{{ route('admin.shifts.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.shifts.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
-                    <i class="fa-solid fa-business-time w-4 text-center {{ request()->routeIs('admin.shifts.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <i class="fa-solid fa-clock w-4 text-center {{ request()->routeIs('admin.shifts.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Shift Kerja</span>
                 </a>
             @else
@@ -209,6 +238,11 @@
                     <span>Klaim Biaya (Reimburse)</span>
                 </a>
 
+                <a href="{{ route('employee.loans.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.loans.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-hand-holding-dollar w-4 text-center {{ request()->routeIs('employee.loans.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Pinjaman & Kasbon</span>
+                </a>
+
                 <a href="{{ route('employee.performance.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.performance.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-award w-4 text-center {{ request()->routeIs('employee.performance.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Rapor Kinerja KPI</span>
@@ -222,6 +256,16 @@
                 <a href="{{ route('employee.calendar.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.calendar.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-calendar-days w-4 text-center {{ request()->routeIs('employee.calendar.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Kalender Cuti Tim</span>
+                </a>
+
+                <a href="{{ route('employee.assets.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.assets.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-laptop w-4 text-center {{ request()->routeIs('employee.assets.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Aset yang Dipegang</span>
+                </a>
+
+                <a href="{{ route('employee.trainings.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.trainings.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-graduation-cap w-4 text-center {{ request()->routeIs('employee.trainings.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Katalog Pelatihan</span>
                 </a>
 
                 <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -325,7 +369,7 @@
 
         <!-- Footer -->
         <footer class="py-4 px-8 border-t border-slate-200/70 bg-white text-center text-xs text-slate-400">
-            &copy; {{ date('Y') }} PT Maju Nusantara HR Management System. Next-Gen Enterprise Suite Edition.
+            &copy; {{ date('Y') }} PT Maju Nusantara HR Management System. Tier-1 Global Enterprise Edition.
         </footer>
     </div>
 

@@ -4,14 +4,21 @@ namespace Database\Seeders;
 
 use App\Models\Announcement;
 use App\Models\Attendance;
+use App\Models\AuditLog;
+use App\Models\CompanyAsset;
 use App\Models\Department;
 use App\Models\EmployeeDocument;
+use App\Models\EmployeeLoan;
+use App\Models\JobApplication;
+use App\Models\JobPosting;
 use App\Models\LeaveRequest;
 use App\Models\Overtime;
 use App\Models\Payroll;
 use App\Models\PerformanceReview;
 use App\Models\Reimbursement;
 use App\Models\Shift;
+use App\Models\Training;
+use App\Models\TrainingParticipant;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -236,15 +243,6 @@ class DatabaseSeeder extends Seeder
             'admin_notes' => 'Disetujui sesuai kuitansi.',
         ]);
 
-        Reimbursement::create([
-            'user_id' => $siti->id,
-            'category' => 'medical',
-            'title' => 'Resep Dokter & Obat Rawat Jalan',
-            'amount' => 320000.00,
-            'description' => 'Klaim biaya pengobatan vitamin dan resep dokter klinik rekanan.',
-            'status' => 'pending',
-        ]);
-
         // 9. Performance Reviews
         PerformanceReview::create([
             'user_id' => $budi->id,
@@ -259,19 +257,6 @@ class DatabaseSeeder extends Seeder
             'status' => 'final',
         ]);
 
-        PerformanceReview::create([
-            'user_id' => $siti->id,
-            'reviewer_id' => $admin->id,
-            'period_year' => '2026',
-            'period_quarter' => 'Q1',
-            'kpi_score' => 84,
-            'attendance_score' => 85,
-            'teamwork_score' => 90,
-            'final_grade' => 'B',
-            'feedback' => 'Analisa laporan keuangan tepat waktu dan teliti.',
-            'status' => 'final',
-        ]);
-
         // 10. Announcements
         Announcement::create([
             'user_id' => $admin->id,
@@ -281,15 +266,137 @@ class DatabaseSeeder extends Seeder
             'is_pinned' => true,
         ]);
 
-        Announcement::create([
-            'user_id' => $admin->id,
-            'title' => 'Sosialisasi Fitur Absensi Kamera & GPS Geofencing',
-            'category' => 'policy',
-            'content' => "Perusahaan telah mengimplementasikan sistem absensi berbasis foto selfie dan validasi geolokasi (radius kantor 250m). Seluruh staf wajib mengaktifkan izin GPS saat melakukan clock-in.",
-            'is_pinned' => false,
+        // 11. ATS & Job Postings
+        $devJob = JobPosting::create([
+            'title' => 'Senior Fullstack Engineer (Laravel & React)',
+            'department_id' => $itDept->id,
+            'type' => 'full_time',
+            'experience_level' => '3 - 5 Tahun',
+            'salary_min' => 15000000.00,
+            'salary_max' => 22000000.00,
+            'description' => 'Bertanggung jawab mengembangkan core application HRMS dan arsitektur enterprise microservices.',
+            'requirements' => 'Keahlian mendalam dalam PHP, Laravel, MySQL, REST API, Tailwind CSS, dan Docker.',
+            'status' => 'active',
         ]);
 
-        // 11. Payroll Records
+        $financeJob = JobPosting::create([
+            'title' => 'Tax & Accounting Specialist',
+            'department_id' => $financeDept->id,
+            'type' => 'full_time',
+            'experience_level' => '2 - 4 Tahun',
+            'salary_min' => 10000000.00,
+            'salary_max' => 14000000.00,
+            'description' => 'Mengelola pelaporan PPh 21, rekonsiliasi bank, dan audit keuangan bulanan.',
+            'requirements' => 'Lulusan Akuntansi, memiliki sertifikasi Brevet A & B.',
+            'status' => 'active',
+        ]);
+
+        // Candidate Applications
+        JobApplication::create([
+            'job_posting_id' => $devJob->id,
+            'candidate_name' => 'Rian Hidayat',
+            'candidate_email' => 'rian.hidayat@example.com',
+            'candidate_phone' => '081233445566',
+            'status' => 'hired',
+            'interview_date' => Carbon::now()->subDays(2)->toDateTimeString(),
+            'notes' => 'Lulus tes koding dengan nilai 98/100. Rekomendasi offering letter disetujui.',
+        ]);
+
+        JobApplication::create([
+            'job_posting_id' => $financeJob->id,
+            'candidate_name' => 'Mega Puspita',
+            'candidate_email' => 'mega.puspita@example.com',
+            'candidate_phone' => '081277889900',
+            'status' => 'interview',
+            'interview_date' => Carbon::now()->addDays(2)->setTime(10, 0)->toDateTimeString(),
+            'notes' => 'Jadwal interview user bersama HR Manager.',
+        ]);
+
+        // 12. Company Assets
+        CompanyAsset::create([
+            'user_id' => $budi->id,
+            'asset_code' => 'AST-LAP-001',
+            'name' => 'MacBook Pro 14 M3 Pro (18GB / 512GB SSD)',
+            'category' => 'laptop',
+            'serial_number' => 'C02G899XMD6T',
+            'purchase_date' => '2024-01-10',
+            'purchase_cost' => 32000000.00,
+            'condition' => 'good',
+            'status' => 'in_use',
+            'assigned_date' => '2024-01-15',
+            'notes' => 'Diserahterimakan lengkap dengan charger 70W dan laptop bag.',
+        ]);
+
+        CompanyAsset::create([
+            'user_id' => $siti->id,
+            'asset_code' => 'AST-LAP-002',
+            'name' => 'Lenovo ThinkPad T14s Gen 4 (Core i7 / 16GB)',
+            'category' => 'laptop',
+            'serial_number' => 'PF39XX01',
+            'purchase_date' => '2023-06-20',
+            'purchase_cost' => 21000000.00,
+            'condition' => 'good',
+            'status' => 'in_use',
+            'assigned_date' => '2023-07-01',
+            'notes' => 'Laptop operasional divisi Finance.',
+        ]);
+
+        CompanyAsset::create([
+            'user_id' => null,
+            'asset_code' => 'AST-VEH-001',
+            'name' => 'Toyota Avanza 1.5 G TSS (B 1234 MAJ)',
+            'category' => 'vehicle',
+            'serial_number' => 'MHKM12345678',
+            'purchase_date' => '2023-03-10',
+            'purchase_cost' => 265000000.00,
+            'condition' => 'good',
+            'status' => 'available',
+            'notes' => 'Kendaraan dinas operasional kantor pusat.',
+        ]);
+
+        // 13. Employee Loans
+        EmployeeLoan::create([
+            'user_id' => $andi->id,
+            'amount' => 3000000.00,
+            'tenor_months' => 3,
+            'monthly_installment' => 1000000.00,
+            'remaining_amount' => 2000000.00,
+            'reason' => 'Biaya renovasi atap rumah darurat.',
+            'status' => 'approved',
+            'approved_by' => $admin->id,
+            'disbursed_at' => Carbon::now()->subMonth()->toDateString(),
+            'admin_notes' => 'Disetujui. Telah terpotong 1x cicilan di payroll bulan lalu.',
+        ]);
+
+        // 14. Trainings
+        $trainCloud = Training::create([
+            'title' => 'Mastering Microservices with Docker & Kubernetes',
+            'trainer_name' => 'Hendra Wijaya, Solution Architect',
+            'category' => 'Engineering & Cloud',
+            'start_date' => Carbon::now()->addDays(7)->toDateString(),
+            'end_date' => Carbon::now()->addDays(8)->toDateString(),
+            'location' => 'Training Room Lt. 3 & Zoom',
+            'capacity' => 15,
+            'description' => 'Pelatihan intensif containerization, autoscaling, dan CI/CD deployment pipeline.',
+            'status' => 'upcoming',
+        ]);
+
+        TrainingParticipant::create([
+            'training_id' => $trainCloud->id,
+            'user_id' => $budi->id,
+            'status' => 'enrolled',
+        ]);
+
+        // 15. Audit Logs
+        AuditLog::create([
+            'user_id' => $admin->id,
+            'action' => 'SYSTEM_INITIALIZATION',
+            'description' => 'Menginisialisasi HRMS Tier-1 Global Enterprise Suite dengan modul ATS, Asset, Loan, dan Training.',
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        ]);
+
+        // 16. Payroll Records
         $prevMonth = Carbon::now()->subMonth()->format('Y-m');
         foreach ([$budi, $siti, $andi, $dewi] as $emp) {
             Payroll::create([
@@ -298,8 +405,8 @@ class DatabaseSeeder extends Seeder
                 'basic_salary' => $emp->salary,
                 'allowances' => 500000.00,
                 'late_deduction' => 0.00,
-                'other_deductions' => 0.00,
-                'net_salary' => $emp->salary + 500000.00,
+                'other_deductions' => ($emp->id === $andi->id) ? 1000000.00 : 0.00, // Loan deduction
+                'net_salary' => $emp->salary + 500000.00 - (($emp->id === $andi->id) ? 1000000.00 : 0.00),
                 'total_present_days' => 22,
                 'total_late_days' => 0,
                 'status' => 'paid',
