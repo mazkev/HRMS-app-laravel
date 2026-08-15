@@ -19,6 +19,7 @@ class User extends Authenticatable
         'password',
         'role',
         'department_id',
+        'shift_id',
         'position',
         'join_date',
         'salary',
@@ -47,6 +48,11 @@ class User extends Authenticatable
         return $this->belongsTo(Department::class);
     }
 
+    public function shift(): BelongsTo
+    {
+        return $this->belongsTo(Shift::class);
+    }
+
     public function attendances(): HasMany
     {
         return $this->hasMany(Attendance::class);
@@ -55,11 +61,6 @@ class User extends Authenticatable
     public function leaveRequests(): HasMany
     {
         return $this->hasMany(LeaveRequest::class);
-    }
-
-    public function approvedLeaveRequests(): HasMany
-    {
-        return $this->hasMany(LeaveRequest::class, 'approved_by');
     }
 
     public function payrolls(): HasMany
@@ -72,9 +73,19 @@ class User extends Authenticatable
         return $this->hasMany(Overtime::class);
     }
 
-    public function approvedOvertimes(): HasMany
+    public function reimbursements(): HasMany
     {
-        return $this->hasMany(Overtime::class, 'approved_by');
+        return $this->hasMany(Reimbursement::class);
+    }
+
+    public function performanceReviews(): HasMany
+    {
+        return $this->hasMany(PerformanceReview::class);
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(EmployeeDocument::class);
     }
 
     public function isAdmin(): bool

@@ -1,15 +1,20 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\OvertimeController;
 use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\PerformanceController;
+use App\Http\Controllers\ReimbursementController;
+use App\Http\Controllers\ShiftController;
 use Illuminate\Support\Facades\Route;
 
 // Public & Authentication Routes
@@ -32,6 +37,12 @@ Route::middleware(['auth'])->group(function () {
     // Shared Printable Slip Gaji Route
     Route::get('/payroll/{id}/slip', [PayrollController::class, 'showSlip'])->name('payroll.slip');
 
+    // Shared Announcements & Documents
+    Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+    Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+    Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+    Route::delete('/documents/{id}', [DocumentController::class, 'destroy'])->name('documents.destroy');
+
     // ==========================================
     // ADMIN HRD ROUTES
     // ==========================================
@@ -47,6 +58,12 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/departments/{id}', [DepartmentController::class, 'update'])->name('departments.update');
         Route::delete('/departments/{id}', [DepartmentController::class, 'destroy'])->name('departments.destroy');
 
+        // Shifts Management
+        Route::get('/shifts', [ShiftController::class, 'index'])->name('shifts.index');
+        Route::post('/shifts', [ShiftController::class, 'store'])->name('shifts.store');
+        Route::put('/shifts/{id}', [ShiftController::class, 'update'])->name('shifts.update');
+        Route::delete('/shifts/{id}', [ShiftController::class, 'destroy'])->name('shifts.destroy');
+
         // Attendance Verification & Logs
         Route::get('/attendance', [AttendanceController::class, 'adminIndex'])->name('attendance.index');
 
@@ -55,14 +72,28 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('/leave-requests/{id}/approve', [LeaveRequestController::class, 'approve'])->name('leave.approve');
         Route::patch('/leave-requests/{id}/reject', [LeaveRequestController::class, 'reject'])->name('leave.reject');
 
-        // Payroll Management
-        Route::get('/payroll', [PayrollController::class, 'adminIndex'])->name('payroll.index');
-        Route::post('/payroll/generate', [PayrollController::class, 'generate'])->name('payroll.generate');
-
         // Overtime Management
         Route::get('/overtimes', [OvertimeController::class, 'adminIndex'])->name('overtime.index');
         Route::patch('/overtimes/{id}/approve', [OvertimeController::class, 'approve'])->name('overtime.approve');
         Route::patch('/overtimes/{id}/reject', [OvertimeController::class, 'reject'])->name('overtime.reject');
+
+        // Reimbursements (Expense Claims)
+        Route::get('/reimbursements', [ReimbursementController::class, 'adminIndex'])->name('reimbursements.index');
+        Route::patch('/reimbursements/{id}/approve', [ReimbursementController::class, 'approve'])->name('reimbursements.approve');
+        Route::patch('/reimbursements/{id}/reject', [ReimbursementController::class, 'reject'])->name('reimbursements.reject');
+
+        // Performance & KPI Appraisal
+        Route::get('/performance', [PerformanceController::class, 'adminIndex'])->name('performance.index');
+        Route::post('/performance', [PerformanceController::class, 'store'])->name('performance.store');
+
+        // Announcements
+        Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+        Route::delete('/announcements/{id}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+
+        // Payroll Management
+        Route::get('/payroll', [PayrollController::class, 'adminIndex'])->name('payroll.index');
+        Route::post('/payroll/generate', [PayrollController::class, 'generate'])->name('payroll.generate');
 
         // Team Leave Calendar
         Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
@@ -90,6 +121,13 @@ Route::middleware(['auth'])->group(function () {
         // Overtime Submissions
         Route::get('/overtimes', [OvertimeController::class, 'employeeIndex'])->name('overtime.index');
         Route::post('/overtimes', [OvertimeController::class, 'store'])->name('overtime.store');
+
+        // Reimbursements
+        Route::get('/reimbursements', [ReimbursementController::class, 'employeeIndex'])->name('reimbursements.index');
+        Route::post('/reimbursements', [ReimbursementController::class, 'store'])->name('reimbursements.store');
+
+        // Performance Scorecard
+        Route::get('/performance', [PerformanceController::class, 'employeeIndex'])->name('performance.index');
 
         // Payroll / Slip Gaji
         Route::get('/payroll', [PayrollController::class, 'employeeIndex'])->name('payroll.index');

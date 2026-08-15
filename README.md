@@ -1,38 +1,42 @@
-# 🏢 HR Management System (HRMS) - PT Maju (Enterprise Suite)
+# 🏢 HR Management System (HRMS) - PT Maju (Next-Gen Ultimate Suite)
 
-Aplikasi sistem informasi manajemen sumber daya manusia (**HRMS Enterprise Suite**) modern berbasis **Laravel 11** untuk PT Maju. Dirancang dengan standar industri untuk kebutuhan operasional lengkap: **Absensi Kamera & Verifikasi GPS Geofencing**, **Modul Penggajian (Payroll & Slip Gaji Otomatis)**, **Manajemen Lembur (Overtime Tracker)**, **Kalender Cuti Tim**, serta **Ekspor Rekapitulasi Data ke CSV/Excel**.
+Aplikasi sistem informasi manajemen sumber daya manusia (**HRMS Next-Gen Ultimate Suite**) kelas enterprise berbasis **Laravel 11** untuk PT Maju Nusantara. 
 
-Didesain dengan antarmuka **Clean Corporate SaaS (Gusto & Rippling Style)** yang lapang, kontras tinggi, elegan, dan sangat intuitif.
+Dirancang secara komprehensif untuk mengotomatisasi seluruh siklus operasional HR modern: **Absensi Kamera Biometrik & GPS Geofencing**, **Klaim Reimbursement & Auto-Payroll**, **Penilaian Kinerja (KPI Appraisal & Scorecard)**, **Papan Pengumuman Digital**, **Brankas Dokumen Karyawan**, **Manajemen Multi-Shift Kerja**, serta dukungan **Progressive Web App (PWA)**.
+
+Didesain dengan antarmuka **Clean Corporate SaaS (Gusto & Rippling Style)** yang lapang, kontras tinggi, bebas *AI slop*, dan sangat intuitif.
 
 ---
 
-## ✨ Fitur-Fitur Utama (Enterprise Suite)
+## ✨ Fitur-Fitur Komprehensif (Next-Gen Suite)
 
 ### 1. 📸 Absensi Kamera Live & GPS Geofencing
-* **Live Video Stream**: Menampilkan viewport kamera webcam biometrik secara *real-time* via Web Camera API browser.
+* **Live Biometric Viewfinder**: Viewport kamera webcam dengan panduan frame wajah secara *real-time*.
 * **GPS Radius Geofencing**: Mengambil koordinat GPS perangkat karyawan dan menghitung jarak aktual ke kantor pusat menggunakan **Haversine formula** (Radius default: 250m).
-* **Deteksi Keterlambatan Otomatis**:
-  * Masuk $\le$ 08:30 WIB $\rightarrow$ Status: `Tepat Waktu` (`present`).
-  * Masuk > 08:30 WIB $\rightarrow$ Status: `Terlambat` (`late`).
-* **Pencegahan Absen Ganda**: Mencegah multiple clock-in pada hari kerja yang sama.
-* **Verifikasi HRD**: Admin HRD dapat melihat foto bukti kehadiran (Clock-In & Clock-Out) dan jarak koordinat GPS per log absensi.
+* **Deteksi Keterlambatan Otomatis**: Menyesuaikan batas waktu keterlambatan secara dinamis per shift kerja.
+* **Verifikasi HRD**: Admin HRD dapat melihat foto bukti kehadiran (Clock-In & Clock-Out) dan jarak koordinat GPS.
 
-### 2. 💰 Modul Penggajian & Cetak Slip Gaji (Payroll)
-* **Kalkulasi Gaji Otomatis**: Mengintegrasikan gaji pokok karyawan, tunjangan tetap, serta denda keterlambatan otomatis berdasarkan data absensi harian.
-* **Generate Payroll Bulanan**: Admin HRD dapat mengkalkulasi payroll seluruh staf hanya dalam 1-klik.
-* **Slip Gaji Resmi (Printable & PDF Ready)**: Karyawan dan HRD dapat mencetak atau mengunduh dokumen slip gaji berformat resmi lengkap dengan kop surat PT Maju Nusantara dan kolom tanda tangan.
+### 2. 🧾 Klaim Biaya Operasional & Medis (Reimbursement)
+* **Lampiran Bukti Struk/Kuitansi**: Karyawan dapat mengunggah foto nota/struk pengeluaran (transport dinas, medis, makan, ATK).
+* **Alur Review & Approval**: HR Finance dapat memverifikasi kuitansi dan menyetujui/menolak klaim.
 
-### 3. ⏱️ Modul Pengajuan & Persetujuan Lembur (Overtime)
-* **Form Pengajuan Lembur**: Karyawan dapat mengajukan jam lembur dengan kalkulasi durasi jam otomatis dan justifikasi tugas.
-* **Alur Approval HRD**: Admin HRD dapat meninjau kesesuaian lembur dengan riwayat jam pulang aktual untuk persetujuan atau penolakan.
+### 3. 🏆 Penilaian Kinerja & KPI (Performance Appraisal)
+* **Scoring Multi-Dimensi**: Evaluasi berkala (Q1, Q2, Q3, Q4, Annual) dengan pembobotan otomatis: KPI (50%), Absensi (30%), Teamwork (20%).
+* **Predikat Nilai (Grade A, B, C, D)**: Rapor evaluasi kinerja transparan bagi karyawan dan manajemen.
 
-### 4. 🏖️ Manajemen Cuti & Kalender Cuti Bersama
-* **Validasi Sisa Kuota Real-Time**: Mencegah pengajuan melebihi sisa hak cuti tahunan (default 12 hari/tahun).
-* **Auto-Deduct Kuota**: Pemotongan kuota cuti secara otomatis saat disetujui (*Approve*) oleh HRD.
-* **Kalender Cuti Bersama (Team Leave Calendar)**: Kalender visual interaktif bulanan untuk memantau ketersediaan rekan kerja di seluruh divisi.
+### 4. 💰 Modul Penggajian & Cetak Slip Gaji (Payroll)
+* **Auto-Kalkulasi Gaji**: Menghitung gaji bersih otomatis berdasarkan gaji pokok + tunjangan dikurangi denda keterlambatan.
+* **Slip Gaji Resmi (Printable & PDF Ready)**: Dokumen slip gaji berformat resmi lengkap dengan kop surat PT Maju Nusantara dan kolom tanda tangan.
 
-### 5. 📊 Ekspor Laporan Data (CSV / Excel)
-* Download rekap data log absensi harian dan rekap penggajian bulanan dalam format CSV/Excel dengan satu klik.
+### 5. 📢 Papan Pengumuman & Berkas Dokumen (Bulletin & Vault)
+* **Papan Pengumuman Internal**: Siaran memo resmi HRD, info libur nasional, dan kebijakan kantor dengan fitur *Pin to Top*.
+* **Brankas Dokumen Karyawan (Digital Vault)**: Tempat penyimpanan aman berkas identitas (KTP, NPWP, PKWT, sertifikat).
+
+### 6. 🔄 Manajemen Shift Kerja (Multi-Shift & Roster)
+* Pengaturan shift kerja fleksibel (*Regular Office*, *Shift Pagi*, *Shift Siang*) dengan toleransi jam masuk dinamis.
+
+### 7. 📱 Progressive Web App (PWA) Support
+* Karyawan dapat menginstal aplikasi HRMS langsung ke layar utama smartphone (Android/iOS) layaknya aplikasi native dengan dukungan offline caching.
 
 ---
 
@@ -41,7 +45,7 @@ Didesain dengan antarmuka **Clean Corporate SaaS (Gusto & Rippling Style)** yang
 * **Framework:** Laravel 11 (PHP 8.2+)
 * **Database:** SQLite (Default plug-and-play) & MySQL / MariaDB (XAMPP ready)
 * **Frontend:** Blade Templating, Tailwind CSS, FontAwesome 6, SweetAlert2
-* **Device APIs:** HTML5 Web Camera API, Geolocation API, Canvas API
+* **Device APIs:** HTML5 Web Camera API, Geolocation API, Service Worker (PWA), Canvas API
 
 ---
 
@@ -69,9 +73,7 @@ php artisan key:generate
 php artisan migrate:fresh --seed
 ```
 
-*(Opsional: Jika menggunakan MySQL di XAMPP, sesuaikan `DB_CONNECTION=mysql` dan nama database di `.env` lalu jalankan perintah di atas).*
-
-### 5. Hubungkan Storage Link (Wajib untuk Foto Absensi)
+### 5. Hubungkan Storage Link (Wajib untuk Foto Absensi & Kuitansi)
 ```bash
 php artisan storage:link
 ```
@@ -88,12 +90,12 @@ Akses aplikasi melalui browser di: **[http://localhost:8000](http://localhost:80
 
 | Peran (Role) | Email / NIK | Password | Akses Fitur Utama |
 | :--- | :--- | :--- | :--- |
-| **Admin HRD** | `admin@hrms.local` / `HR001` | `password` | Overview Dashboard, Log Absensi GPS, Approval Cuti & Lembur, Payroll & Slip Gaji, Kalender Tim, Export CSV, CRUD Karyawan & Dept |
-| **Karyawan 1 (IT)** | `budi@hrms.local` / `EMP001` | `password` | Dashboard Personal, Absensi Kamera + GPS, Pengajuan Cuti, Pengajuan Lembur, Cetak Slip Gaji Saya, Kalender Tim |
+| **Admin HRD** | `admin@hrms.local` / `HR001` | `password` | Dashboard KPI, Log Absensi GPS, Approval Cuti & Lembur, Reimbursement, Penilaian KPI, Payroll, Kalender Tim, Pengumuman, Brankas Dokumen, Shift & Karyawan |
+| **Karyawan 1 (IT)** | `budi@hrms.local` / `EMP001` | `password` | Dashboard Personal, Absensi Kamera + GPS, Pengajuan Cuti, Lembur, Klaim Reimburse, Rapor KPI, Slip Gaji, Kalender Tim, Pengumuman & Berkas |
 | **Karyawan 2 (Finance)** | `siti@hrms.local` / `EMP002` | `password` | Portal Karyawan Departemen Finance |
-| **Karyawan 3 (Operations)**| `andi@hrms.local` / `EMP003` | `password` | Portal Karyawan Departemen Operasional |
+| **Karyawan 3 (Operations)**| `andi@hrms.local` / `EMP003` | `password` | Portal Karyawan Departemen Operasional (Shift Pagi) |
 
 ---
 
 ## 📄 Lisensi
-Hak Cipta &copy; 2026 PT Maju Nusantara. Dikembangkan untuk efisiensi operasional sumber daya manusia modern.
+Hak Cipta &copy; 2026 PT Maju Nusantara. Next-Gen Enterprise Edition.
