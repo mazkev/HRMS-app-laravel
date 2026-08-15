@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AttendanceController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\LoanController;
+use App\Http\Controllers\OrgChartController;
 use App\Http\Controllers\OvertimeController;
 use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PerformanceController;
@@ -42,17 +44,21 @@ Route::middleware(['auth'])->group(function () {
     // Shared Printable Slip Gaji Route
     Route::get('/payroll/{id}/slip', [PayrollController::class, 'showSlip'])->name('payroll.slip');
 
-    // Shared Announcements & Documents
+    // Shared Announcements & Documents & Org Chart
     Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
     Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
     Route::delete('/documents/{id}', [DocumentController::class, 'destroy'])->name('documents.destroy');
+    Route::get('/org-chart', [OrgChartController::class, 'index'])->name('orgchart.index');
 
     // ==========================================
     // ADMIN HRD ROUTES
     // ==========================================
     Route::middleware(['role:admin_hr'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
+
+        // Executive Analytics
+        Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
 
         // Recruitment & ATS
         Route::get('/recruitment', [RecruitmentController::class, 'index'])->name('recruitment.index');

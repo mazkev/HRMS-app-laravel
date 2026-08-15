@@ -103,12 +103,17 @@
             @if(Auth::user()->role === 'admin_hr')
                 <!-- ADMIN MENU -->
                 <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    Operasional Utama
+                    Operasional & Eksekutif
                 </div>
 
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-chart-pie w-4 text-center {{ request()->routeIs('admin.dashboard') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Dashboard</span>
+                </a>
+
+                <a href="{{ route('admin.analytics.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.analytics.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-chart-line w-4 text-center {{ request()->routeIs('admin.analytics.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Executive Analytics</span>
                 </a>
 
                 <a href="{{ route('admin.attendance.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.attendance.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -152,8 +157,13 @@
                 </a>
 
                 <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    Talenta & Aset
+                    Talenta, Struktur & Aset
                 </div>
+
+                <a href="{{ route('orgchart.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('orgchart.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-sitemap w-4 text-center {{ request()->routeIs('orgchart.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Struktur Organisasi</span>
+                </a>
 
                 <a href="{{ route('admin.recruitment.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.recruitment.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-user-plus w-4 text-center {{ request()->routeIs('admin.recruitment.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
@@ -256,6 +266,11 @@
                 <a href="{{ route('employee.calendar.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.calendar.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-calendar-days w-4 text-center {{ request()->routeIs('employee.calendar.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Kalender Cuti Tim</span>
+                </a>
+
+                <a href="{{ route('orgchart.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('orgchart.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-sitemap w-4 text-center {{ request()->routeIs('orgchart.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Struktur Organisasi</span>
                 </a>
 
                 <a href="{{ route('employee.assets.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.assets.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
