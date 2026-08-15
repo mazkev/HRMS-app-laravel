@@ -2,7 +2,7 @@
 
 @section('title', 'Overview HRD')
 @section('page-title', 'Overview Dashboard')
-@section('page-subtitle', 'Monitoring kehadiran real-time, status karyawan, dan permohonan cuti.')
+@section('page-subtitle', 'Monitoring kehadiran real-time, status karyawan, lembur, dan permohonan cuti.')
 
 @section('content')
 <div class="space-y-6">
@@ -74,20 +74,20 @@
     <div class="saas-card p-6 bg-gradient-to-r from-blue-900 to-slate-900 text-white flex flex-col md:flex-row items-center justify-between gap-4 border-none shadow-md">
         <div>
             <h4 class="text-base font-bold text-white mb-1">Aksi Cepat Admin HRD</h4>
-            <p class="text-xs text-blue-200">Kelola operasional absensi kamera, verifikasi foto kehadiran, dan persetujuan hak cuti.</p>
+            <p class="text-xs text-blue-200">Kelola absensi GPS, verifikasi foto kehadiran, penggajian payroll, dan kalender cuti tim.</p>
         </div>
         <div class="flex items-center gap-3 flex-wrap">
             <a href="{{ route('admin.attendance.index') }}" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow transition flex items-center gap-2">
                 <i class="fa-solid fa-camera"></i>
-                <span>Verifikasi Foto Absensi</span>
+                <span>Verifikasi Absensi & GPS</span>
             </a>
-            <a href="{{ route('admin.leave.index') }}" class="px-4 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold shadow transition flex items-center gap-2">
-                <i class="fa-solid fa-check-double text-blue-600"></i>
+            <a href="{{ route('admin.payroll.index') }}" class="px-4 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold shadow transition flex items-center gap-2">
+                <i class="fa-solid fa-file-invoice-dollar text-blue-600"></i>
+                <span>Kelola Payroll</span>
+            </a>
+            <a href="{{ route('admin.leave.index') }}" class="px-4 py-2 rounded-xl bg-blue-950/80 hover:bg-blue-950 text-white text-xs font-semibold border border-blue-700/60 transition flex items-center gap-2">
+                <i class="fa-solid fa-check-double text-blue-400"></i>
                 <span>Review Cuti ({{ $pendingLeaves }})</span>
-            </a>
-            <a href="{{ route('admin.employees.create') }}" class="px-4 py-2 rounded-xl bg-blue-950/80 hover:bg-blue-950 text-white text-xs font-semibold border border-blue-700/60 transition flex items-center gap-2">
-                <i class="fa-solid fa-user-plus"></i>
-                <span>+ Karyawan Baru</span>
             </a>
         </div>
     </div>
@@ -100,7 +100,7 @@
             <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
                 <div>
                     <h4 class="text-sm font-bold text-slate-900">Log Kehadiran Hari Ini</h4>
-                    <p class="text-xs text-slate-500">Aktivitas clock-in & clock-out terbaru</p>
+                    <p class="text-xs text-slate-500">Aktivitas clock-in & clock-out terbaru dengan GPS</p>
                 </div>
                 <a href="{{ route('admin.attendance.index') }}" class="text-xs text-blue-600 hover:text-blue-700 font-bold flex items-center gap-1">
                     Lihat Semua <i class="fa-solid fa-chevron-right text-[10px]"></i>
@@ -121,6 +121,9 @@
                             <div>
                                 <h5 class="text-xs font-bold text-slate-900">{{ $att->user->name }}</h5>
                                 <p class="text-[11px] text-slate-500">{{ $att->user->department->name ?? 'General' }} • {{ $att->user->nik }}</p>
+                                @if($att->distance_meters !== null)
+                                    <span class="text-[10px] text-slate-400 font-medium">📍 {{ $att->distance_meters }}m dari kantor</span>
+                                @endif
                             </div>
                         </div>
 

@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Log Absensi & Verifikasi')
-@section('page-title', 'Log Absensi & Verifikasi Foto')
-@section('page-subtitle', 'Monitoring rekap absensi harian dan verifikasi bukti foto selfie karyawan.')
+@section('page-title', 'Log Absensi & Verifikasi GPS')
+@section('page-subtitle', 'Monitoring rekap absensi harian, verifikasi foto selfie, dan validasi radius geolokasi kantor.')
 
 @section('content')
 <div class="space-y-6">
@@ -65,11 +65,17 @@
 
     <!-- Attendance Logs Table -->
     <div class="saas-card rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-100">
             <div>
                 <h4 class="text-sm font-bold text-slate-900">Rekap Kehadiran ({{ \Carbon\Carbon::parse($date)->translatedFormat('l, d F Y') }})</h4>
                 <p class="text-xs text-slate-500">Ditemukan {{ $attendances->total() }} catatan kehadiran</p>
             </div>
+
+            <!-- Export CSV Button -->
+            <a href="{{ route('admin.export.attendance', ['date' => $date]) }}" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-300 flex items-center gap-2 transition shadow-sm self-start sm:self-auto">
+                <i class="fa-solid fa-file-csv text-emerald-600 text-sm"></i>
+                <span>Export Log CSV</span>
+            </a>
         </div>
 
         <div class="overflow-x-auto">
@@ -82,7 +88,7 @@
                         <th class="py-3 px-4">Jam Masuk</th>
                         <th class="py-3 px-4 text-center">Foto Pulang</th>
                         <th class="py-3 px-4">Jam Pulang</th>
-                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-4">Status & Geolocation</th>
                         <th class="py-3 px-4">Catatan</th>
                     </tr>
                 </thead>
@@ -140,21 +146,30 @@
                                 {{ $att->time_out ?? '-' }}
                             </td>
 
-                            <!-- Status -->
+                            <!-- Status & Geolocation -->
                             <td class="py-3.5 px-4">
-                                @if($att->status === 'present')
-                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <i class="fa-solid fa-check mr-1"></i> Tepat Waktu
-                                    </span>
-                                @elseif($att->status === 'late')
-                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                                        <i class="fa-solid fa-clock mr-1"></i> Terlambat
-                                    </span>
-                                @else
-                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
-                                        {{ ucfirst($att->status) }}
-                                    </span>
-                                @endif
+                                <div class="flex flex-col gap-1">
+                                    <div>
+                                        @if($att->status === 'present')
+                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                <i class="fa-solid fa-check mr-1"></i> Tepat Waktu
+                                            </span>
+                                        @elseif($att->status === 'late')
+                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                                <i class="fa-solid fa-clock mr-1"></i> Terlambat
+                                            </span>
+                                        @else
+                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">
+                                                {{ ucfirst($att->status) }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    @if($att->distance_meters !== null)
+                                        <span class="text-[10px] text-slate-500 font-medium">
+                                            <i class="fa-solid fa-location-dot text-blue-600 text-[9px]"></i> {{ $att->distance_meters }}m dari kantor
+                                        </span>
+                                    @endif
+                                </div>
                             </td>
 
                             <!-- Catatan -->

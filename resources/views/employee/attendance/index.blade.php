@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Absensi Kamera')
-@section('page-title', 'Absensi Kamera (Live Selfie)')
-@section('page-subtitle', 'Lakukan clock-in dan clock-out dengan verifikasi foto selfie langsung dari perangkat Anda.')
+@section('title', 'Absensi Kamera & GPS')
+@section('page-title', 'Absensi Kamera & Verifikasi GPS')
+@section('page-subtitle', 'Lakukan clock-in dan clock-out dengan verifikasi foto selfie dan validasi geolokasi radius kantor.')
 
 @section('content')
 <div class="space-y-6">
@@ -15,7 +15,7 @@
             <div class="w-full flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
                 <div class="flex items-center gap-2">
                     <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800">Kamera Pemindai Wajah</h3>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-800">Pemindai Wajah Biometrik</h3>
                 </div>
                 <div class="flex items-center gap-2">
                     <button type="button" onclick="switchCamera()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5">
@@ -59,8 +59,19 @@
                 </div>
             </div>
 
+            <!-- Live GPS Status Badge -->
+            <div class="w-full max-w-md mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-location-dot text-blue-600"></i>
+                    <span id="gpsStatusText" class="text-slate-600 font-medium">Mendeteksi lokasi GPS...</span>
+                </div>
+                <span id="gpsBadge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-600">
+                    GPS Pending
+                </span>
+            </div>
+
             <!-- Capture / Retake Buttons -->
-            <div class="mt-5 flex items-center gap-3 w-full max-w-md justify-center">
+            <div class="mt-4 flex items-center gap-3 w-full max-w-md justify-center">
                 <button type="button" id="btnCapture" onclick="takeSnapshot()" class="flex-1 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 active:scale-95 transition">
                     <i class="fa-solid fa-camera"></i>
                     <span>Ambil Foto Selfie</span>
@@ -94,9 +105,14 @@
                             </div>
                         </div>
                         @if($todayAttendance && $todayAttendance->time_in)
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $todayAttendance->status === 'late' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200' }}">
-                                {{ $todayAttendance->status === 'late' ? 'Terlambat (> 08:30)' : 'Tepat Waktu' }}
-                            </span>
+                            <div class="text-right">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold {{ $todayAttendance->status === 'late' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200' }}">
+                                    {{ $todayAttendance->status === 'late' ? 'Terlambat (> 08:30)' : 'Tepat Waktu' }}
+                                </span>
+                                @if($todayAttendance->distance_meters !== null)
+                                    <p class="text-[10px] text-slate-400 mt-0.5">Jarak: {{ $todayAttendance->distance_meters }}m</p>
+                                @endif
+                            </div>
                         @endif
                     </div>
 
@@ -124,6 +140,8 @@
                     <form id="clockInForm" action="{{ route('employee.attendance.clockIn') }}" method="POST" class="space-y-4">
                         @csrf
                         <input type="hidden" name="image" id="clockInImage">
+                        <input type="hidden" name="latitude" id="clockInLat">
+                        <input type="hidden" name="longitude" id="clockInLng">
 
                         <div>
                             <label for="notes" class="block text-xs font-bold text-slate-700 mb-1.5">
@@ -135,7 +153,7 @@
 
                         <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-start gap-2">
                             <i class="fa-solid fa-circle-info text-amber-600 mt-0.5"></i>
-                            <span>Batas waktu tepat waktu adalah pukul <strong>08:30 WIB</strong>. Ambil foto selfie terlebih dahulu sebelum submit.</span>
+                            <span>Batas waktu tepat waktu: <strong>08:30 WIB</strong>. Radius kantor maksimal: <strong>{{ $officeRadius }} meter</strong>.</span>
                         </div>
 
                         <button type="button" onclick="submitAttendance('clockInForm', 'clockInImage')" class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-500/20 flex items-center justify-center gap-2 transition active:scale-95">
@@ -149,6 +167,8 @@
                     <form id="clockOutForm" action="{{ route('employee.attendance.clockOut') }}" method="POST" class="space-y-4">
                         @csrf
                         <input type="hidden" name="image" id="clockOutImage">
+                        <input type="hidden" name="latitude" id="clockOutLat">
+                        <input type="hidden" name="longitude" id="clockOutLng">
 
                         <div class="p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 text-xs">
                             <p class="font-bold mb-1">Sudah Absen Masuk pukul {{ $todayAttendance->time_in }}</p>
@@ -174,7 +194,7 @@
             </div>
 
             <p class="text-[11px] text-slate-400 text-center mt-6">
-                <i class="fa-solid fa-shield-halved text-blue-600 mr-1"></i> Verifikasi kamera biometrik terenkripsi aman.
+                <i class="fa-solid fa-shield-halved text-blue-600 mr-1"></i> Verifikasi kamera biometrik & GPS terenkripsi aman.
             </p>
         </div>
     </div>
@@ -184,7 +204,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-3 border-b border-slate-100">
             <div>
                 <h4 class="text-sm font-bold text-slate-900">Riwayat Absensi Saya</h4>
-                <p class="text-xs text-slate-500">Log kehadiran dan foto selfie per bulan</p>
+                <p class="text-xs text-slate-500">Log kehadiran, foto selfie, dan verifikasi geolokasi</p>
             </div>
 
             <!-- Month Filter -->
@@ -204,7 +224,7 @@
                         <th class="py-3 px-4">Jam Masuk</th>
                         <th class="py-3 px-4 text-center">Foto Pulang</th>
                         <th class="py-3 px-4">Jam Pulang</th>
-                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-4">Status & Radius</th>
                         <th class="py-3 px-4">Catatan</th>
                     </tr>
                 </thead>
@@ -246,13 +266,22 @@
                             </td>
 
                             <td class="py-3.5 px-4">
-                                @if($item->status === 'present')
-                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Tepat Waktu</span>
-                                @elseif($item->status === 'late')
-                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">Terlambat</span>
-                                @else
-                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">{{ ucfirst($item->status) }}</span>
-                                @endif
+                                <div class="flex flex-col gap-1">
+                                    <div>
+                                        @if($item->status === 'present')
+                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Tepat Waktu</span>
+                                        @elseif($item->status === 'late')
+                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">Terlambat</span>
+                                        @else
+                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">{{ ucfirst($item->status) }}</span>
+                                        @endif
+                                    </div>
+                                    @if($item->distance_meters !== null)
+                                        <span class="text-[10px] text-slate-500">
+                                            <i class="fa-solid fa-location-dot text-blue-600 text-[9px]"></i> {{ $item->distance_meters }}m dari kantor
+                                        </span>
+                                    @endif
+                                </div>
                             </td>
 
                             <td class="py-3.5 px-4 text-slate-500 italic max-w-xs truncate">
@@ -290,8 +319,14 @@
 @push('scripts')
 <script>
     let currentStream = null;
-    let facingMode = 'user'; // 'user' (front) or 'environment' (back)
+    let facingMode = 'user';
     let capturedBase64 = null;
+    let userLat = null;
+    let userLng = null;
+
+    const officeLat = {{ $officeLat }};
+    const officeLng = {{ $officeLng }};
+    const officeRadius = {{ $officeRadius }};
 
     const video = document.getElementById('webcam');
     const canvas = document.getElementById('canvas');
@@ -301,6 +336,61 @@
     const statusBox = document.getElementById('cameraStatus');
     const statusMsg = document.getElementById('cameraStatusMsg');
     const viewfinder = document.getElementById('viewfinderOverlay');
+    const gpsStatusText = document.getElementById('gpsStatusText');
+    const gpsBadge = document.getElementById('gpsBadge');
+
+    // Haversine Formula Client-Side Distance
+    function getDistanceFromLatLonInM(lat1, lon1, lat2, lon2) {
+        const R = 6371000;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return Math.round(R * c);
+    }
+
+    function initGeolocation() {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    userLat = pos.coords.latitude;
+                    userLng = pos.coords.longitude;
+
+                    const dist = getDistanceFromLatLonInM(userLat, userLng, officeLat, officeLng);
+                    const isInside = dist <= officeRadius;
+
+                    gpsStatusText.innerText = `Jarak: ${dist}m dari Kantor Pusat`;
+                    if (isInside) {
+                        gpsBadge.innerText = 'Di Dalam Radius';
+                        gpsBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200';
+                    } else {
+                        gpsBadge.innerText = `Luar Radius (> ${officeRadius}m)`;
+                        gpsBadge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200';
+                    }
+
+                    if (document.getElementById('clockInLat')) {
+                        document.getElementById('clockInLat').value = userLat;
+                        document.getElementById('clockInLng').value = userLng;
+                    }
+                    if (document.getElementById('clockOutLat')) {
+                        document.getElementById('clockOutLat').value = userLat;
+                        document.getElementById('clockOutLng').value = userLng;
+                    }
+                },
+                (err) => {
+                    console.warn('Geolocation error:', err);
+                    gpsStatusText.innerText = 'GPS tidak aktif / izin ditolak';
+                    gpsBadge.innerText = 'GPS Offline';
+                    gpsBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-500';
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        } else {
+            gpsStatusText.innerText = 'Browser tidak mendukung GPS';
+        }
+    }
 
     async function initCamera() {
         if (currentStream) {
@@ -356,13 +446,9 @@
         canvas.height = video.videoHeight;
         const ctx = canvas.getContext('2d');
 
-        // Draw image onto canvas
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        // Convert to Base64 JPEG
         capturedBase64 = canvas.toDataURL('image/jpeg', 0.85);
 
-        // Show preview
         previewImg.src = capturedBase64;
         previewImg.classList.remove('hidden');
         video.classList.add('hidden');
@@ -410,6 +496,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        initGeolocation();
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             initCamera();
         } else {

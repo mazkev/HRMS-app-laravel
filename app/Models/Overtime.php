@@ -6,38 +6,37 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Attendance extends Model
+class Overtime extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
         'date',
-        'time_in',
-        'time_out',
-        'image_in',
-        'image_out',
-        'latitude',
-        'longitude',
-        'distance_meters',
-        'is_office_radius',
+        'start_time',
+        'end_time',
+        'duration_hours',
+        'reason',
         'status',
-        'notes',
+        'approved_by',
+        'admin_notes',
     ];
 
     protected function casts(): array
     {
         return [
             'date' => 'date',
-            'latitude' => 'decimal:8',
-            'longitude' => 'decimal:8',
-            'distance_meters' => 'integer',
-            'is_office_radius' => 'boolean',
+            'duration_hours' => 'decimal:2',
         ];
     }
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function approver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 }

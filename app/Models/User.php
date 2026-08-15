@@ -62,6 +62,21 @@ class User extends Authenticatable
         return $this->hasMany(LeaveRequest::class, 'approved_by');
     }
 
+    public function payrolls(): HasMany
+    {
+        return $this->hasMany(Payroll::class);
+    }
+
+    public function overtimes(): HasMany
+    {
+        return $this->hasMany(Overtime::class);
+    }
+
+    public function approvedOvertimes(): HasMany
+    {
+        return $this->hasMany(Overtime::class, 'approved_by');
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin_hr';

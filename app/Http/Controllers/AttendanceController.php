@@ -13,6 +13,11 @@ use Illuminate\Support\Str;
 
 class AttendanceController extends Controller
 {
+    // PT Maju Office Coordinates
+    const OFFICE_LAT = -6.2088000;
+    const OFFICE_LNG = 106.8456000;
+    const OFFICE_RADIUS_METERS = 250;
+
     /**
      * Show Attendance Page for Employee (Camera Clock-In / Clock-Out)
      */
@@ -33,16 +38,22 @@ class AttendanceController extends Controller
             ->orderBy('date', 'desc')
             ->get();
 
-        return view('employee.attendance.index', compact('todayAttendance', 'history', 'month'));
+        $officeLat = self::OFFICE_LAT;
+        $officeLng = self::OFFICE_LNG;
+        $officeRadius = self::OFFICE_RADIUS_METERS;
+
+        return view('employee.attendance.index', compact('todayAttendance', 'history', 'month', 'officeLat', 'officeLng', 'officeRadius'));
     }
 
     /**
-     * Handle Clock-In with Camera Snapshot
+     * Handle Clock-In with Camera Snapshot & GPS Geofencing
      */
     public function clockIn(Request $request)
     {
         $request->validate([
             'image' => 'required|string', // base64 data url
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
             'notes' => 'nullable|string|max:255',
         ]);
 
@@ -60,6 +71,17 @@ class AttendanceController extends Controller
 
         $imagePath = $this->saveBase64Image($request->input('image'), 'clock_in');
 
+        // GPS Calculation
+        $lat = $request->input('latitude');
+        $lng = $request->input('longitude');
+        $distance = null;
+        $isWithinRadius = true;
+
+        if ($lat && $lng) {
+            $distance = (int) round($this->calculateDistance($lat, $lng, self::OFFICE_LAT, self::OFFICE_LNG));
+            $isWithinRadius = ($distance <= self::OFFICE_RADIUS_METERS);
+        }
+
         // Status calculation (Cut-off late: 08:30:00)
         $lateThreshold = Carbon::today()->setTime(8, 30, 0);
         $status = $now->greaterThan($lateThreshold) ? 'late' : 'present';
@@ -72,14 +94,19 @@ class AttendanceController extends Controller
             [
                 'time_in' => $now->toTimeString(),
                 'image_in' => $imagePath,
+                'latitude' => $lat,
+                'longitude' => $lng,
+                'distance_meters' => $distance,
+                'is_office_radius' => $isWithinRadius,
                 'status' => $status,
                 'notes' => $request->input('notes'),
             ]
         );
 
         $statusLabel = $status === 'late' ? 'Terlambat' : 'Tepat Waktu';
+        $locationMsg = $distance !== null ? " (Jarak GPS: {$distance}m)" : "";
         return redirect()->route('employee.attendance.index')
-            ->with('success', "Absen Masuk berhasil dicatat! Status: {$statusLabel} ({$now->format('H:i:s')}).");
+            ->with('success', "Absen Masuk berhasil dicatat! Status: {$statusLabel} ({$now->format('H:i:s')}){$locationMsg}.");
     }
 
     /**
@@ -88,7 +115,9 @@ class AttendanceController extends Controller
     public function clockOut(Request $request)
     {
         $request->validate([
-            'image' => 'required|string', // base64 data url
+            'image' => 'required|string',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
         $user = Auth::user();
@@ -156,14 +185,34 @@ class AttendanceController extends Controller
     }
 
     /**
+     * Calculate Distance between coordinates in meters using Haversine formula
+     */
+    private function calculateDistance($lat1, $lon1, $lat2, $lon2): float
+    {
+        $earthRadius = 6371000; // in meters
+
+        $latFrom = deg2rad($lat1);
+        $lonFrom = deg2rad($lon1);
+        $latTo = deg2rad($lat2);
+        $lonTo = deg2rad($lon2);
+
+        $latDelta = $latTo - $latFrom;
+        $lonDelta = $lonTo - $lonFrom;
+
+        $angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+            cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+
+        return $angle * $earthRadius;
+    }
+
+    /**
      * Helper to store base64 image data to public storage
      */
     private function saveBase64Image(string $base64Data, string $prefix): string
     {
-        // Strip out data-uri prefix if present (e.g. data:image/jpeg;base64,)
         if (preg_match('/^data:image\/(\w+);base64,/', $base64Data, $type)) {
             $base64Data = substr($base64Data, strpos($base64Data, ',') + 1);
-            $type = strtolower($type[1]); // jpg, png, etc.
+            $type = strtolower($type[1]);
         } else {
             $type = 'jpg';
         }
