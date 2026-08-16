@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Announcement;
 use App\Models\Attendance;
 use App\Models\Department;
 use App\Models\LeaveRequest;
+use App\Models\Payroll;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -65,14 +67,33 @@ class DashboardController extends Controller
 
         $presentCount = $monthlyAttendances->where('status', 'present')->count();
         $lateCount = $monthlyAttendances->where('status', 'late')->count();
-        $recentLeaves = LeaveRequest::where('user_id', $user->id)->latest()->take(5)->get();
+        
+        $recentAttendances = Attendance::where('user_id', $user->id)
+            ->latest('date')
+            ->take(5)
+            ->get();
+
+        $recentLeaves = LeaveRequest::where('user_id', $user->id)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $latestPayroll = Payroll::where('user_id', $user->id)
+            ->latest('period_month')
+            ->first();
+
+        $latestAnnouncement = Announcement::where('is_pinned', true)->latest()->first() 
+            ?? Announcement::latest()->first();
 
         return view('employee.dashboard', compact(
             'user',
             'todayAttendance',
             'presentCount',
             'lateCount',
-            'recentLeaves'
+            'recentAttendances',
+            'recentLeaves',
+            'latestPayroll',
+            'latestAnnouncement'
         ));
     }
 }
