@@ -6,31 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class LeaveRequest extends Model
+class Resignation extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'start_date',
-        'end_date',
-        'total_days',
-        'leave_type',
-        'medical_certificate',
+        'notice_date',
+        'resign_date',
         'reason',
         'status',
         'approved_by',
-        'admin_notes',
+        'paklaring_number',
+        'exit_clearance_notes',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'start_date' => 'date',
-            'end_date' => 'date',
-            'total_days' => 'integer',
-        ];
-    }
 
     public function user(): BelongsTo
     {

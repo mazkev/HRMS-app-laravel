@@ -1,66 +1,62 @@
-# 🏢 HR Management System (HRMS) - PT Maju (Tier-1 Global Enterprise Suite)
+# 🏢 HR Management System (HRMS) - PT Maju (Indonesian Statutory Compliance Edition)
 
-Aplikasi sistem informasi manajemen sumber daya manusia (**HRMS Tier-1 Global Enterprise Suite**) terlengkap dan modern berbasis **Laravel 11** untuk PT Maju Nusantara. 
+Aplikasi sistem informasi manajemen sumber daya manusia (**HRMS Enterprise**) terlengkap dan modern berbasis **Laravel 11** untuk PT Maju Nusantara. 
 
-Mencakup seluruh siklus operasional HR harian, analitik eksekutif, dan manajemen talenta tingkat lanjut: **Executive Analytics Dashboard (Chart.js)**, **Struktur Organisasi Interaktif (Org Chart)**, **Absensi Kamera Biometrik & GPS Geofencing**, **Rekrutmen & Pelacakan Pelamar (ATS)**, **Manajemen Aset & Inventaris Kantor**, **Klaim Biaya (Reimbursement)**, **Pinjaman Karyawan & Kasbon**, **Penilaian Kinerja (KPI Appraisal & Scorecard)**, **Pelatihan Karyawan (LMS Lite)**, **Penggajian & Cetak Slip Gaji (Payroll)**, **Audit Trail Log Keamanan**, serta **Progressive Web App (PWA)**.
+Mencakup seluruh siklus operasional HR harian, kepatuhan pajak & ketenagakerjaan Indonesia, analitik eksekutif, serta manajemen talenta tingkat lanjut:
+* **🇮🇩 Kepatuhan Pajak PPh 21 (TER 2024) & Kalkulator BPJS (Kesehatan 1% + Ketenagakerjaan 3%)**
+* **⚠️ Surat Peringatan Kedisiplinan (SP 1, SP 2, SP 3) & Dokumen Hukum Resmi**
+* **🚪 Manajemen Resignasi & Surat Pengalaman Kerja (Paklaring)**
+* **🏥 Cuti Khusus (Melahirkan, Menikah, Duka) & Wajib Upload Surat Dokter (SKD)**
+* **🤖 Asisten Virtual HR (AI Policy Helpdesk Chatbot 24/7)**
+* **📊 Executive Analytics Dashboard (Line, Donut, Bar Chart via Chart.js)**
+* **🌳 Struktur Organisasi Interaktif (Interactive Org Chart)**
+* **📸 Absensi Kamera Biometrik & GPS Geofencing (Radius 250m Haversine)**
+* **🏢 Rekrutmen & Pelacakan Pelamar (ATS) dengan 1-Click Convert to Employee**
+* **💻 Manajemen Inventaris & Aset Kantor (Asset Tracker)**
+* **💸 Pinjaman Karyawan & Kasbon Darurat (Auto-Deduct Payroll)**
+* **🧾 Klaim Biaya Operasional (Reimbursement)**
+* **🏆 Penilaian Kinerja Multi-Dimensi (KPI Appraisal)**
+* **🎓 Pelatihan Karyawan & Self-Enrollment (LMS Lite)**
+* **💰 Penggajian & Cetak Slip Gaji PDF Resmi (Payroll)**
+* **🛡️ Audit Trail Log & Keamanan Sistem**
+* **📱 Progressive Web App (PWA) Ready**
 
 Didesain dengan standar antarmuka **Clean Corporate SaaS (Gusto & Rippling Style)** yang lapang, elegan, kontras tinggi, dan bebas *AI slop*.
 
 ---
 
-## 🌟 Modul & Fitur Komprehensif (Tier-1 Suite)
+## 🌟 Modul & Fitur Flagship
 
-### 1. 📊 Executive HR Intelligence & Analytics (Chart.js)
-* **Tren Absensi & Ketepatan Waktu**: Visualisasi data line chart persentase kehadiran tepat waktu vs terlambat dalam 6 bulan terakhir.
-* **Distribusi Anggaran Payroll**: Donut chart alokasi pengeluaran gaji per departemen.
-* **Komparasi Tenaga Kerja & Utilisasi Cuti**: Bar chart perbandingan jumlah staf aktif dan total hari cuti yang telah disetujui.
+### 1. 🇮🇩 Pajak PPh 21 (TER 2024) & Kalkulator BPJS
+* **Kalkulasi PPh 21 TER Otomatis**: Mendukung seluruh status PTKP (`TK/0` s/d `K/3`) sesuai PP 58/2023 & PMK 168/2023.
+* **Iuran BPJS Resmi**: BPJS Kesehatan (1% Karyawan, 4% Perusahaan) & BPJS Ketenagakerjaan (JHT 2%, JP 1%).
+* **Rincian Potongan Slip Gaji**: Transparansi pemotongan pajak dan BPJS pada slip gaji resmi karyawan.
 
-### 2. 🌳 Struktur Organisasi Interaktif (Interactive Org Chart)
-* **Visual Hierarchy Tree**: Bagan hierarki pohon garis komando perusahaan (Dewan Direksi/CEO $\rightarrow$ HR Management $\rightarrow$ Divisi Operasional $\rightarrow$ Staf) lengkap dengan avatar dan badge posisi.
+### 2. ⚠️ Surat Peringatan (SP 1, SP 2, SP 3) & Kedisiplinan
+* **Penerbitan Surat Sanksi Resmi**: Pemilihan tingkat sanksi (SP 1, SP 2, SP 3), jenis pelanggaran, dan nomor surat otomatis (`SP/2026/08/001`).
+* **Masa Berlaku Otomatis**: SP aktif selama 6 bulan dan dilengkapi template surat resmi siap cetak / PDF berkop surat PT Maju Nusantara.
 
-### 3. 📸 Absensi Kamera Live & GPS Geofencing
-* **Live Biometric Viewfinder**: Viewport kamera webcam dengan pemandu posisi wajah.
-* **GPS Radius Geofencing**: Validasi koordinat GPS ke titik kantor pusat via **Haversine formula** (Radius default: 250m).
-* **Deteksi Keterlambatan Otomatis**: Toleransi keterlambatan dinamis menyesuaikan shift kerja staf.
+### 3. 🚪 Manajemen Resignasi & Surat Paklaring (Offboarding)
+* **Formulir 1-Month Notice**: Pengajuan pengunduran diri minimal 30 hari sebelum hari kerja terakhir.
+* **Exit Clearance & Paklaring**: Verifikasi serah terima tugas/aset dan pencetakan otomatis **Surat Pengalaman Kerja (Paklaring)** resmi bertanda tangan HR Manager.
 
-### 4. 🏢 Rekrutmen & Pelacakan Pelamar (ATS & Onboarding)
-* **Job Postings Manager**: Publikasi lowongan kerja per divisi unit kerja.
-* **Visual Pipeline**: Pelacakan tahapan seleksi (*Applied* $\rightarrow$ *Screening* $\rightarrow$ *Interview* $\rightarrow$ *Offering* $\rightarrow$ *Hired*).
-* **1-Click Convert to Employee**: Konversi otomatis kandidat yang diterima (*Hired*) menjadi akun Karyawan resmi (NIK, email, dan password default).
+### 4. 🏥 Cuti Khusus & Wajib Upload Surat Dokter (SKD)
+* **Kategori Cuti Non-Tahunan**: Cuti Melahirkan (90 hari), Cuti Menikah (3 hari), Cuti Berduka tanpa memotong kuota cuti tahunan.
+* **Unggah Dokumen SKD**: Form permohonan cuti sakit mewajibkan unggah bukti surat dokter (JPG/PNG/PDF).
 
-### 5. 💻 Manajemen Inventaris & Aset Kantor (Asset Tracker)
-* **Pencatatan Hardware & Kendaraan**: Pendataan unit laptop (MacBook/ThinkPad), monitor, smartphone dinas, dan mobil operasional.
-* **Serah Terima Digital**: Pelacakan pemegang aset, tanggal serah terima, dan pemantauan kondisi fisik barang (*Good / Maintenance / Damaged*).
+### 5. 🤖 Asisten Virtual HR (AI Policy Helpdesk)
+* **Floating Chatbot 24/7**: Terpasang di pojok kanan bawah aplikasi untuk menjawab pertanyaan seputar sisa cuti, jadwal gajian, aturan lembur, kasbon, dan kebijakan HR secara interaktif.
 
-### 6. 💸 Pinjaman Karyawan & Kasbon (Employee Loan)
-* **Kalkulasi Cicilan Otomatis**: Pemilihan tenor (1 - 12 bulan) dengan simulasi potongan per bulan secara *real-time*.
-* **Auto-Payroll Deduction**: Cicilan pinjaman otomatis didebet pada rincian slip gaji bulanan.
+### 6. 📊 Executive HR Intelligence & Analytics (Chart.js)
+* **Tren Absensi**: Line chart kehadiran tepat waktu vs terlambat 6 bulan terakhir.
+* **Distribusi Payroll**: Donut chart proporsi alokasi anggaran gaji per divisi.
+* **Komparasi Cuti & Staf**: Bar chart perbandingan utilisasi hari cuti antar divisi.
 
-### 7. 🧾 Klaim Biaya Operasional (Reimbursement)
-* **Lampiran Bukti Kuitansi**: Upload foto nota pengeluaran (transportasi dinas luar, medis, konsumsi, ATK).
-* **Alur Review HR Finance**: Verifikasi kuitansi dan persetujuan pencairan dana.
+### 7. 🌳 Struktur Organisasi Interaktif (Org Chart)
+* **Bagan Visual Hierarki**: Garis komando Dewan Direksi $\rightarrow$ Manajemen HR $\rightarrow$ Unit Operasional $\rightarrow$ Staf dengan kartu profil dan NIK.
 
-### 8. 🏆 Penilaian Kinerja & KPI (Performance Appraisal)
-* **Scoring Multi-Dimensi**: Evaluasi berkala (Q1, Q2, Q3, Q4, Annual) dengan pembobotan: KPI (50%), Absensi (30%), Teamwork (20%).
-* **Kartu Rapor Kinerja**: Rapor evaluasi kinerja transparan (*Grade A, B, C, D*).
-
-### 9. 🎓 Pelatihan & Sertifikasi Karyawan (LMS Lite)
-* **Katalog Pelatihan Internal**: Publikasi jadwal workshop, modul pelatihan, dan instruktur.
-* **Pendaftaran Mandiri (Self-Enrollment)**: Pendaftaran langsung oleh karyawan sesuai kuota kelas.
-
-### 10. 💰 Modul Penggajian & Cetak Slip Gaji (Payroll)
-* **Auto-Kalkulasi Gaji**: Gaji pokok + tunjangan - denda telat - cicilan pinjaman.
-* **Dokumen Slip Gaji Resmi**: Cetak/Download PDF Slip Gaji lengkap dengan kop surat PT Maju Nusantara dan kolom tanda tangan.
-
-### 11. 🛡️ Audit Trail Log & Keamanan
-* **Pencatatan Aktivitas Sensitif**: Riwayat perubahan data penting dengan timestamp, IP Address, dan user pelaksana untuk kepatuhan audit.
-
-### 12. 📢 Papan Pengumuman & Brankas Dokumen (Bulletin & Vault)
-* **Pengumuman Resmi**: Siaran memo direksi (*Pin to Top*).
-* **Brankas Dokumen Digital**: Penyimpanan aman salinan berkas KTP, NPWP, PKWT, dan sertifikat.
-
-### 13. 📱 Progressive Web App (PWA) Support
-* Dapat di-*install* langsung ke layar utama smartphone (Android/iOS) dengan dukungan offline caching.
+### 8. 📸 Absensi Kamera Live & GPS Geofencing
+* **Live Biometric Viewfinder**: Validasi lokasi GPS kantor via Haversine formula (Radius: 250m) dan pencegah manipulasi presensi.
 
 ---
 
@@ -114,12 +110,13 @@ Akses aplikasi melalui browser di: **[http://localhost:8000](http://localhost:80
 
 | Peran (Role) | Email / NIK | Password | Akses Fitur Utama |
 | :--- | :--- | :--- | :--- |
-| **Admin HRD** | `admin@hrms.local` / `HR001` | `password` | Dashboard Eksekutif, Analytics Chart.js, Org Chart, Absensi GPS, Approval Cuti/Lembur, ATS Rekrutmen, Manajemen Aset, Kasbon, KPI, Pelatihan LMS, Payroll, Audit Log |
-| **Karyawan 1 (IT)** | `budi@hrms.local` / `EMP001` | `password` | Dashboard Personal, Org Chart, Absensi Kamera + GPS, Cuti, Lembur, Reimburse, Kasbon, Aset Pegangan, Rapor KPI, Slip Gaji, Pelatihan, Brankas Dokumen |
+| **Admin HRD** | `admin@hrms.local` / `HR001` | `password` | Dashboard Eksekutif, Analytics Chart.js, Org Chart, Penerbitan SP, Approval Resignasi & Paklaring, Absensi GPS, Approval Cuti & SKD, ATS Rekrutmen, Manajemen Aset, Kasbon, KPI, Pelatihan LMS, Payroll & PPh 21, Audit Log |
+| **Karyawan 1 (IT)** | `budi@hrms.local` / `EMP001` | `password` | Dashboard Personal, AI Helpdesk Bot, Absensi Kamera + GPS, Pengajuan Cuti, SP Saya, Resignasi, Lembur, Reimburse, Kasbon, Aset Pegangan, Rapor KPI, Slip Gaji, Pelatihan, Brankas Dokumen |
 | **Karyawan 2 (Finance)** | `siti@hrms.local` / `EMP002` | `password` | Portal Karyawan Departemen Finance |
-| **Karyawan 3 (Operations)**| `andi@hrms.local` / `EMP003` | `password` | Portal Karyawan Operasional (Shift Pagi & Pinjaman Aktif) |
+| **Karyawan 3 (Operations)**| `andi@hrms.local` / `EMP003` | `password` | Portal Karyawan Operasional (Shift Pagi, Pinjaman Aktif & Catatan SP 1) |
+| **Karyawan 4 (Marketing)** | `dewi@hrms.local` / `EMP004` | `password` | Portal Karyawan dengan Status Resignasi Disetujui & Surat Paklaring Terbit |
 
 ---
 
 ## 📄 Lisensi
-Hak Cipta &copy; 2026 PT Maju Nusantara. Tier-1 Global Enterprise Suite.
+Hak Cipta &copy; 2026 PT Maju Nusantara. Indonesian Statutory Compliance Edition.

@@ -16,10 +16,13 @@ use App\Models\Overtime;
 use App\Models\Payroll;
 use App\Models\PerformanceReview;
 use App\Models\Reimbursement;
+use App\Models\Resignation;
 use App\Models\Shift;
 use App\Models\Training;
 use App\Models\TrainingParticipant;
 use App\Models\User;
+use App\Models\WarningLetter;
+use App\Services\TaxBpjsCalculator;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -91,6 +94,10 @@ class DatabaseSeeder extends Seeder
             'position' => 'HR Manager',
             'join_date' => '2022-01-10',
             'salary' => 18500000.00,
+            'ptkp_status' => 'K/1',
+            'npwp' => '09.123.456.7-012.000',
+            'bpjs_kesehatan_no' => '0001234567890',
+            'bpjs_ketenagakerjaan_no' => '21098765432',
             'leave_quota' => 15,
             'phone' => '081234567890',
         ]);
@@ -107,6 +114,10 @@ class DatabaseSeeder extends Seeder
             'position' => 'Senior Software Engineer',
             'join_date' => '2023-02-15',
             'salary' => 16000000.00,
+            'ptkp_status' => 'TK/0',
+            'npwp' => '08.765.432.1-012.000',
+            'bpjs_kesehatan_no' => '0001234567891',
+            'bpjs_ketenagakerjaan_no' => '21098765433',
             'leave_quota' => 12,
             'phone' => '081298765432',
         ]);
@@ -122,6 +133,10 @@ class DatabaseSeeder extends Seeder
             'position' => 'Senior Financial Analyst',
             'join_date' => '2023-05-01',
             'salary' => 12500000.00,
+            'ptkp_status' => 'K/0',
+            'npwp' => '07.654.321.0-012.000',
+            'bpjs_kesehatan_no' => '0001234567892',
+            'bpjs_ketenagakerjaan_no' => '21098765434',
             'leave_quota' => 10,
             'phone' => '081345678901',
         ]);
@@ -137,6 +152,10 @@ class DatabaseSeeder extends Seeder
             'position' => 'Operations Officer',
             'join_date' => '2023-08-10',
             'salary' => 9500000.00,
+            'ptkp_status' => 'TK/1',
+            'npwp' => '06.543.210.9-012.000',
+            'bpjs_kesehatan_no' => '0001234567893',
+            'bpjs_ketenagakerjaan_no' => '21098765435',
             'leave_quota' => 12,
             'phone' => '081456789012',
         ]);
@@ -152,6 +171,10 @@ class DatabaseSeeder extends Seeder
             'position' => 'Marketing Specialist',
             'join_date' => '2024-01-15',
             'salary' => 10000000.00,
+            'ptkp_status' => 'TK/0',
+            'npwp' => '05.432.109.8-012.000',
+            'bpjs_kesehatan_no' => '0001234567894',
+            'bpjs_ketenagakerjaan_no' => '21098765436',
             'leave_quota' => 8,
             'phone' => '081567890123',
         ]);
@@ -197,9 +220,10 @@ class DatabaseSeeder extends Seeder
             'status' => 'present',
         ]);
 
-        // 6. Leave Requests
+        // 6. Leave Requests (Annual, Sick with SKD, Maternity)
         LeaveRequest::create([
             'user_id' => $budi->id,
+            'leave_type' => 'annual',
             'start_date' => Carbon::now()->addDays(3)->toDateString(),
             'end_date' => Carbon::now()->addDays(5)->toDateString(),
             'total_days' => 3,
@@ -209,13 +233,14 @@ class DatabaseSeeder extends Seeder
 
         LeaveRequest::create([
             'user_id' => $dewi->id,
+            'leave_type' => 'sick',
             'start_date' => Carbon::now()->subDays(10)->toDateString(),
             'end_date' => Carbon::now()->subDays(9)->toDateString(),
             'total_days' => 2,
-            'reason' => 'Istirahat pasca rawat jalan.',
+            'reason' => 'Istirahat medis pasca rawat jalan (Flu berat & demam tinggi).',
             'status' => 'approved',
             'approved_by' => $admin->id,
-            'admin_notes' => 'Disetujui. Semoga lekas pulih.',
+            'admin_notes' => 'Disetujui. Bukti SKD terverifikasi.',
         ]);
 
         // 7. Overtime
@@ -279,18 +304,6 @@ class DatabaseSeeder extends Seeder
             'status' => 'active',
         ]);
 
-        $financeJob = JobPosting::create([
-            'title' => 'Tax & Accounting Specialist',
-            'department_id' => $financeDept->id,
-            'type' => 'full_time',
-            'experience_level' => '2 - 4 Tahun',
-            'salary_min' => 10000000.00,
-            'salary_max' => 14000000.00,
-            'description' => 'Mengelola pelaporan PPh 21, rekonsiliasi bank, dan audit keuangan bulanan.',
-            'requirements' => 'Lulusan Akuntansi, memiliki sertifikasi Brevet A & B.',
-            'status' => 'active',
-        ]);
-
         // Candidate Applications
         JobApplication::create([
             'job_posting_id' => $devJob->id,
@@ -300,16 +313,6 @@ class DatabaseSeeder extends Seeder
             'status' => 'hired',
             'interview_date' => Carbon::now()->subDays(2)->toDateTimeString(),
             'notes' => 'Lulus tes koding dengan nilai 98/100. Rekomendasi offering letter disetujui.',
-        ]);
-
-        JobApplication::create([
-            'job_posting_id' => $financeJob->id,
-            'candidate_name' => 'Mega Puspita',
-            'candidate_email' => 'mega.puspita@example.com',
-            'candidate_phone' => '081277889900',
-            'status' => 'interview',
-            'interview_date' => Carbon::now()->addDays(2)->setTime(10, 0)->toDateTimeString(),
-            'notes' => 'Jadwal interview user bersama HR Manager.',
         ]);
 
         // 12. Company Assets
@@ -327,35 +330,8 @@ class DatabaseSeeder extends Seeder
             'notes' => 'Diserahterimakan lengkap dengan charger 70W dan laptop bag.',
         ]);
 
-        CompanyAsset::create([
-            'user_id' => $siti->id,
-            'asset_code' => 'AST-LAP-002',
-            'name' => 'Lenovo ThinkPad T14s Gen 4 (Core i7 / 16GB)',
-            'category' => 'laptop',
-            'serial_number' => 'PF39XX01',
-            'purchase_date' => '2023-06-20',
-            'purchase_cost' => 21000000.00,
-            'condition' => 'good',
-            'status' => 'in_use',
-            'assigned_date' => '2023-07-01',
-            'notes' => 'Laptop operasional divisi Finance.',
-        ]);
-
-        CompanyAsset::create([
-            'user_id' => null,
-            'asset_code' => 'AST-VEH-001',
-            'name' => 'Toyota Avanza 1.5 G TSS (B 1234 MAJ)',
-            'category' => 'vehicle',
-            'serial_number' => 'MHKM12345678',
-            'purchase_date' => '2023-03-10',
-            'purchase_cost' => 265000000.00,
-            'condition' => 'good',
-            'status' => 'available',
-            'notes' => 'Kendaraan dinas operasional kantor pusat.',
-        ]);
-
         // 13. Employee Loans
-        EmployeeLoan::create([
+        $andiLoan = EmployeeLoan::create([
             'user_id' => $andi->id,
             'amount' => 3000000.00,
             'tenor_months' => 3,
@@ -387,26 +363,67 @@ class DatabaseSeeder extends Seeder
             'status' => 'enrolled',
         ]);
 
-        // 15. Audit Logs
+        // 15. Warning Letters (Disciplinary SP)
+        WarningLetter::create([
+            'user_id' => $andi->id,
+            'letter_number' => 'SP/2026/08/001',
+            'level' => 'SP 1',
+            'violation_type' => 'Keterlambatan Berulang Shift Pagi',
+            'description' => 'Tercatat mengalami keterlambatan hadir lebih dari 5 kali dalam periode 1 bulan tanpa konfirmasi terlebih dahulu.',
+            'issued_date' => Carbon::now()->subMonth()->toDateString(),
+            'valid_until' => Carbon::now()->addMonths(5)->toDateString(),
+            'issued_by' => $admin->id,
+            'status' => 'active',
+        ]);
+
+        // 16. Resignations & Paklaring
+        Resignation::create([
+            'user_id' => $dewi->id,
+            'notice_date' => Carbon::now()->subDays(15)->toDateString(),
+            'resign_date' => Carbon::now()->addDays(15)->toDateString(),
+            'reason' => 'Melanjutkan studi magister (S2) ke luar negeri.',
+            'status' => 'approved',
+            'approved_by' => $admin->id,
+            'paklaring_number' => 'PKL/2026/08/001',
+            'exit_clearance_notes' => 'Handover tugas marketing telah selesai. Surat paklaring diterbitkan.',
+        ]);
+
+        // 17. Audit Logs
         AuditLog::create([
             'user_id' => $admin->id,
             'action' => 'SYSTEM_INITIALIZATION',
-            'description' => 'Menginisialisasi HRMS Tier-1 Global Enterprise Suite dengan modul ATS, Asset, Loan, dan Training.',
+            'description' => 'Menginisialisasi HRMS Tier-1 dengan kepatuhan PPh 21 TER, BPJS, Modul SP, Resignasi, dan AI Helpdesk.',
             'ip_address' => '127.0.0.1',
             'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
         ]);
 
-        // 16. Payroll Records
+        // 18. Payroll Records with PPh 21 TER and BPJS
         $prevMonth = Carbon::now()->subMonth()->format('Y-m');
         foreach ([$budi, $siti, $andi, $dewi] as $emp) {
+            $basicSalary = (float) $emp->salary;
+            $allowances = 500000.00;
+            $gross = $basicSalary + $allowances;
+
+            $pph21 = TaxBpjsCalculator::calculatePph21($gross, $emp->ptkp_status ?? 'TK/0');
+            $bpjsKes = TaxBpjsCalculator::calculateBpjsKesehatan($basicSalary);
+            $bpjsTk = TaxBpjsCalculator::calculateBpjsTk($basicSalary);
+            $loanDed = ($emp->id === $andi->id) ? 1000000.00 : 0.00;
+
+            $totalDeductions = $pph21 + $bpjsKes + $bpjsTk + $loanDed;
+            $netSalary = $gross - $totalDeductions;
+
             Payroll::create([
                 'user_id' => $emp->id,
                 'period_month' => $prevMonth,
-                'basic_salary' => $emp->salary,
-                'allowances' => 500000.00,
+                'basic_salary' => $basicSalary,
+                'allowances' => $allowances,
+                'pph21_amount' => $pph21,
+                'bpjs_kesehatan_deduction' => $bpjsKes,
+                'bpjs_tk_deduction' => $bpjsTk,
+                'loan_deduction' => $loanDed,
                 'late_deduction' => 0.00,
-                'other_deductions' => ($emp->id === $andi->id) ? 1000000.00 : 0.00, // Loan deduction
-                'net_salary' => $emp->salary + 500000.00 - (($emp->id === $andi->id) ? 1000000.00 : 0.00),
+                'other_deductions' => 0.00,
+                'net_salary' => $netSalary,
                 'total_present_days' => 22,
                 'total_late_days' => 0,
                 'status' => 'paid',

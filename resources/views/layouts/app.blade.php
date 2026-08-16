@@ -123,7 +123,17 @@
 
                 <a href="{{ route('admin.leave.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.leave.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-calendar-check w-4 text-center {{ request()->routeIs('admin.leave.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
-                    <span>Persetujuan Cuti</span>
+                    <span>Persetujuan Cuti & SKD</span>
+                </a>
+
+                <a href="{{ route('admin.warning-letters.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.warning-letters.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-triangle-exclamation w-4 text-center {{ request()->routeIs('admin.warning-letters.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Surat Peringatan (SP)</span>
+                </a>
+
+                <a href="{{ route('admin.resignations.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.resignations.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-user-xmark w-4 text-center {{ request()->routeIs('admin.resignations.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Offboarding & Paklaring</span>
                 </a>
 
                 <a href="{{ route('admin.overtime.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.overtime.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -148,7 +158,7 @@
 
                 <a href="{{ route('admin.payroll.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.payroll.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-file-invoice-dollar w-4 text-center {{ request()->routeIs('admin.payroll.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
-                    <span>Penggajian (Payroll)</span>
+                    <span>Penggajian & PPh 21</span>
                 </a>
 
                 <a href="{{ route('admin.calendar.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.calendar.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -235,7 +245,17 @@
 
                 <a href="{{ route('employee.leave.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.leave.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-umbrella-beach w-4 text-center {{ request()->routeIs('employee.leave.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
-                    <span>Pengajuan Cuti</span>
+                    <span>Pengajuan Cuti & SKD</span>
+                </a>
+
+                <a href="{{ route('employee.warning-letters.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.warning-letters.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-triangle-exclamation w-4 text-center {{ request()->routeIs('employee.warning-letters.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Surat Peringatan Saya</span>
+                </a>
+
+                <a href="{{ route('employee.resignations.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.resignations.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-user-xmark w-4 text-center {{ request()->routeIs('employee.resignations.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Resignasi & Paklaring</span>
                 </a>
 
                 <a href="{{ route('employee.overtime.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.overtime.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -323,7 +343,7 @@
     </aside>
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col pl-64 min-h-screen bg-slate-50">
+    <div class="flex-1 flex flex-col pl-64 min-h-screen bg-slate-50 relative">
         <!-- Top Navbar -->
         <header class="h-20 border-b border-slate-200/80 bg-white/90 backdrop-blur-md px-8 flex items-center justify-between sticky top-0 z-20">
             <div>
@@ -384,8 +404,77 @@
 
         <!-- Footer -->
         <footer class="py-4 px-8 border-t border-slate-200/70 bg-white text-center text-xs text-slate-400">
-            &copy; {{ date('Y') }} PT Maju Nusantara HR Management System. Tier-1 Global Enterprise Edition.
+            &copy; {{ date('Y') }} PT Maju Nusantara HR Management System. Indonesian Compliance Edition.
         </footer>
+    </div>
+
+    <!-- FLOATING VIRTUAL AI HR HELPDESK WIDGET -->
+    <div id="aiHelpdeskContainer" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        <!-- Chat Window (Hidden by default) -->
+        <div id="aiChatWindow" class="hidden w-80 sm:w-96 bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden mb-3 transition-all duration-300 flex-col">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-700 to-slate-900 p-4 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/30 border border-blue-400/40 flex items-center justify-center text-amber-300 text-sm">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold leading-tight">Virtual HR Assistant</h4>
+                        <span class="text-[10px] text-blue-200 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span> Siap Menjawab 24/7
+                        </span>
+                    </div>
+                </div>
+                <button onclick="toggleAiChat()" class="text-slate-300 hover:text-white text-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Chat Logs -->
+            <div id="chatMessages" class="p-4 space-y-3 h-72 overflow-y-auto bg-slate-50/50 text-xs">
+                <!-- Greeting -->
+                <div class="flex items-start gap-2">
+                    <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] shrink-0 font-bold">HR</div>
+                    <div class="p-3 bg-white border border-slate-200 rounded-2xl rounded-tl-none shadow-sm text-slate-800 space-y-1">
+                        <p>Halo, <strong>{{ Auth::user()->name }}</strong>! 👋</p>
+                        <p class="text-slate-600">Saya asisten pintar HR PT Maju. Anda dapat memilih pertanyaan cepat atau ketik pertanyaan seputar kebijakan kantor di bawah ini:</p>
+                    </div>
+                </div>
+
+                <!-- Quick Prompts Buttons -->
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <button onclick="askAiQuestion('Berapa sisa cuti saya?')" class="px-2.5 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11px] font-medium transition">
+                        🏖️ Sisa cuti saya?
+                    </button>
+                    <button onclick="askAiQuestion('Kapan tanggal gajian dan potongan apa saja?')" class="px-2.5 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11px] font-medium transition">
+                        💰 Jadwal gajian & PPh 21?
+                    </button>
+                    <button onclick="askAiQuestion('Bagaimana syarat pinjaman kasbon?')" class="px-2.5 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11px] font-medium transition">
+                        💸 Syarat kasbon kantor?
+                    </button>
+                    <button onclick="askAiQuestion('Bagaimana aturan cuti melahirkan dan sakit?')" class="px-2.5 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11px] font-medium transition">
+                        🏥 Cuti sakit & melahirkan?
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input Box -->
+            <div class="p-3 bg-white border-t border-slate-100 flex items-center gap-2">
+                <input type="text" id="aiInput" placeholder="Ketik pertanyaan seputar HR..."
+                    onkeypress="if(event.key==='Enter') sendUserAiMessage()"
+                    class="flex-1 p-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-blue-600">
+                <button onclick="sendUserAiMessage()" class="w-8 h-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center text-xs shadow-sm transition">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Floating Trigger Button -->
+        <button onclick="toggleAiChat()"
+            class="px-4 py-3 rounded-full bg-gradient-to-r from-blue-600 to-slate-900 hover:from-blue-700 hover:to-slate-800 text-white font-bold text-xs shadow-xl shadow-blue-500/25 flex items-center gap-2.5 transition transform hover:scale-105 active:scale-95">
+            <i class="fa-solid fa-robot text-amber-300 text-sm"></i>
+            <span>Tanya Asisten HR</span>
+        </button>
     </div>
 
     <!-- PWA Service Worker Registration -->
@@ -396,6 +485,73 @@
                     console.log('SW registration skipped or failed:', err);
                 });
             });
+        }
+
+        // Virtual HR AI Assistant Chat Logic
+        function toggleAiChat() {
+            const win = document.getElementById('aiChatWindow');
+            win.classList.toggle('hidden');
+            win.classList.toggle('flex');
+        }
+
+        function askAiQuestion(question) {
+            document.getElementById('aiInput').value = question;
+            sendUserAiMessage();
+        }
+
+        function sendUserAiMessage() {
+            const input = document.getElementById('aiInput');
+            const q = input.value.trim();
+            if (!q) return;
+
+            const chat = document.getElementById('chatMessages');
+
+            // Append User Message
+            const userHtml = `
+                <div class="flex items-start justify-end gap-2">
+                    <div class="p-3 bg-blue-600 text-white rounded-2xl rounded-tr-none shadow-sm text-xs max-w-[80%]">
+                        ${q}
+                    </div>
+                </div>
+            `;
+            chat.insertAdjacentHTML('beforeend', userHtml);
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
+
+            // Generate AI Response based on Knowledge Base
+            setTimeout(() => {
+                let ans = "Terima kasih atas pertanyaan Anda. Untuk informasi lebih spesifik, silakan hubungi tim HRD di ruangan lantai 2.";
+                const lowerQ = q.toLowerCase();
+
+                if (lowerQ.includes('cuti') && (lowerQ.includes('sisa') || lowerQ.includes('berapa'))) {
+                    ans = `Sisa kuota cuti tahunan Anda saat ini adalah <strong>{{ Auth::user()->leave_quota }} Hari</strong>. Pengajuan cuti dapat dilakukan melalui menu <strong>Pengajuan Cuti & SKD</strong>.`;
+                } else if (lowerQ.includes('gaji') || lowerQ.includes('gajian') || lowerQ.includes('payroll') || lowerQ.includes('pph')) {
+                    ans = `Gaji bulanan dibayarkan pada <strong>tanggal 25 hingga akhir bulan</strong>. Rincian gaji telah menghitung otomatis <strong>Pajak PPh 21 (TER 2024)</strong>, <strong>BPJS Kesehatan (1%)</strong>, <strong>BPJS Ketenagakerjaan (3%)</strong>, dan cicilan kasbon jika ada. Anda dapat mengunduh slip resmi di menu <strong>Slip Gaji Saya</strong>.`;
+                } else if (lowerQ.includes('kasbon') || lowerQ.includes('pinjam') || lowerQ.includes('pinjaman')) {
+                    ans = `Fasilitas kasbon internal PT Maju memiliki <strong>bunga 0%</strong> dengan plafon s/d Rp 20.000.000 dan pilihan tenor 1 s/d 12 bulan. Potongan cicilan dilakukan otomatis melalui Payroll setiap akhir bulan.`;
+                } else if (lowerQ.includes('sakit') || lowerQ.includes('dokter') || lowerQ.includes('skd') || lowerQ.includes('melahirkan')) {
+                    ans = `Cuti sakit mewajibkan unggah <strong>Surat Keterangan Dokter (SKD)</strong>. Cuti Melahirkan diberikan selama <strong>90 hari (3 bulan)</strong> dan <strong>TIDAK MEMOTONG</strong> kuota cuti tahunan Anda.`;
+                } else if (lowerQ.includes('lembur') || lowerQ.includes('overtime')) {
+                    ans = `Pengajuan lembur harus diajukan di menu <strong>Pengajuan Lembur</strong> dengan persetujuan kepala departemen minimal 1 hari kerja sebelum pelaksanaan.`;
+                } else if (lowerQ.includes('reimburse') || lowerQ.includes('klaim')) {
+                    ans = `Klaim reimbursement operasional/medis dapat diajukan dengan melampirkan foto kuitansi/struk pembayaran asli maksimal 14 hari setelah transaksi dilakukan.`;
+                } else if (lowerQ.includes('sp') || lowerQ.includes('peringatan') || lowerQ.includes('disiplin')) {
+                    ans = `Surat Peringatan (SP 1, SP 2, SP 3) memiliki masa berlaku aktif selama <strong>6 bulan</strong> dan diterbitkan resmi oleh HRD apabila terdapat pelanggaran kedisiplinan.`;
+                } else if (lowerQ.includes('resign') || lowerQ.includes('paklaring') || lowerQ.includes('keluar')) {
+                    ans = `Pengajuan pengunduran diri mengikuti kebijakan <strong>1-Month Notice</strong> (minimal 30 hari). Setelah exit clearance disetujui, Anda dapat langsung mengunduh <strong>Surat Pengalaman Kerja (Paklaring)</strong> resmi berformat PDF.`;
+                }
+
+                const botHtml = `
+                    <div class="flex items-start gap-2">
+                        <div class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] shrink-0 font-bold">HR</div>
+                        <div class="p-3 bg-white border border-slate-200 rounded-2xl rounded-tl-none shadow-sm text-slate-800 space-y-1 text-xs max-w-[85%]">
+                            <p>${ans}</p>
+                        </div>
+                    </div>
+                `;
+                chat.insertAdjacentHTML('beforeend', botHtml);
+                chat.scrollTop = chat.scrollHeight;
+            }, 500);
         }
     </script>
     @stack('scripts')

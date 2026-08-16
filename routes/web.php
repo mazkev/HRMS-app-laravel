@@ -20,8 +20,10 @@ use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\PerformanceController;
 use App\Http\Controllers\RecruitmentController;
 use App\Http\Controllers\ReimbursementController;
+use App\Http\Controllers\ResignationController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\TrainingController;
+use App\Http\Controllers\WarningLetterController;
 use Illuminate\Support\Facades\Route;
 
 // Public & Authentication Routes
@@ -41,8 +43,10 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Authenticated Routes
 Route::middleware(['auth'])->group(function () {
 
-    // Shared Printable Slip Gaji Route
+    // Shared Printable Documents
     Route::get('/payroll/{id}/slip', [PayrollController::class, 'showSlip'])->name('payroll.slip');
+    Route::get('/warning-letters/{id}/print', [WarningLetterController::class, 'showPrint'])->name('warning-letters.print');
+    Route::get('/resignations/{id}/paklaring', [ResignationController::class, 'showPaklaring'])->name('resignations.paklaring');
 
     // Shared Announcements & Documents & Org Chart
     Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
@@ -59,6 +63,14 @@ Route::middleware(['auth'])->group(function () {
 
         // Executive Analytics
         Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+
+        // Disciplinary & Warning Letters (SP)
+        Route::get('/warning-letters', [WarningLetterController::class, 'adminIndex'])->name('warning-letters.index');
+        Route::post('/warning-letters', [WarningLetterController::class, 'store'])->name('warning-letters.store');
+
+        // Offboarding & Resignations
+        Route::get('/resignations', [ResignationController::class, 'adminIndex'])->name('resignations.index');
+        Route::patch('/resignations/{id}/approve', [ResignationController::class, 'approve'])->name('resignations.approve');
 
         // Recruitment & ATS
         Route::get('/recruitment', [RecruitmentController::class, 'index'])->name('recruitment.index');
@@ -151,6 +163,13 @@ Route::middleware(['auth'])->group(function () {
         // Leave Requests
         Route::get('/leave-requests', [LeaveRequestController::class, 'employeeIndex'])->name('leave.index');
         Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave.store');
+
+        // Warning Letters
+        Route::get('/warning-letters', [WarningLetterController::class, 'employeeIndex'])->name('warning-letters.index');
+
+        // Resignations & Paklaring
+        Route::get('/resignations', [ResignationController::class, 'employeeIndex'])->name('resignations.index');
+        Route::post('/resignations', [ResignationController::class, 'store'])->name('resignations.store');
 
         // Overtime Submissions
         Route::get('/overtimes', [OvertimeController::class, 'employeeIndex'])->name('overtime.index');

@@ -2,76 +2,73 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
 use App\Models\LeaveRequest;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class LeaveRequestController extends Controller
 {
     /**
-     * Employee Leave History & Application List
+     * Employee Leave Index & Submission Form
      */
     public function employeeIndex()
     {
         $user = Auth::user();
-        $leaves = LeaveRequest::where('user_id', $user->id)
+        $leaveRequests = LeaveRequest::where('user_id', $user->id)
             ->latest()
             ->paginate(10);
 
-        return view('employee.leave.index', compact('user', 'leaves'));
+        return view('employee.leave.index', compact('leaveRequests', 'user'));
     }
 
     /**
-     * Store new Leave Request submitted by Employee
+     * Store Leave Request (Handles Special Leaves & Medical Certificate Upload)
      */
     public function store(Request $request)
     {
         $request->validate([
+            'leave_type' => 'required|in:annual,sick,maternity,marriage,bereavement,unpaid',
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'reason' => 'required|string|min:5|max:1000',
+            'reason' => 'required|string|max:500',
+            'medical_certificate' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:3072',
         ]);
 
         $user = Auth::user();
         $start = Carbon::parse($request->input('start_date'));
         $end = Carbon::parse($request->input('end_date'));
         $totalDays = $start->diffInDays($end) + 1;
+        $leaveType = $request->input('leave_type');
 
-        // Check if user has sufficient leave quota
-        if ($user->leave_quota < $totalDays) {
-            return back()->withInput()->with('error', "Sisa kuota cuti Anda ({$user->leave_quota} hari) tidak mencukupi untuk pengajuan {$totalDays} hari cuti.");
+        // Check annual leave quota ONLY if type is annual
+        if ($leaveType === 'annual' && $user->leave_quota < $totalDays) {
+            return back()->with('error', "Sisa kuota cuti tahunan Anda ({$user->leave_quota} hari) tidak mencukupi untuk pengajuan {$totalDays} hari.");
         }
 
-        // Check overlapping leave requests
-        $overlap = LeaveRequest::where('user_id', $user->id)
-            ->where('status', '!=', 'rejected')
-            ->where(function ($q) use ($start, $end) {
-                $q->whereBetween('start_date', [$start, $end])
-                  ->orWhereBetween('end_date', [$start, $end])
-                  ->orWhere(function ($sub) use ($start, $end) {
-                      $sub->where('start_date', '<=', $start)
-                          ->where('end_date', '>=', $end);
-                  });
-            })->exists();
-
-        if ($overlap) {
-            return back()->withInput()->with('error', 'Anda sudah memiliki pengajuan cuti yang aktif pada rentang tanggal tersebut.');
+        // Handle Medical Certificate Upload
+        $certPath = null;
+        if ($request->hasFile('medical_certificate')) {
+            $certPath = $request->file('medical_certificate')->store('medical_certificates', 'public');
+        } elseif ($leaveType === 'sick') {
+            return back()->with('error', 'Pengajuan cuti sakit wajib melampirkan foto/PDF Surat Keterangan Dokter (SKD).');
         }
 
         LeaveRequest::create([
             'user_id' => $user->id,
-            'start_date' => $start->toDateString(),
-            'end_date' => $end->toDateString(),
+            'leave_type' => $leaveType,
+            'medical_certificate' => $certPath,
+            'start_date' => $request->input('start_date'),
+            'end_date' => $request->input('end_date'),
             'total_days' => $totalDays,
             'reason' => $request->input('reason'),
             'status' => 'pending',
         ]);
 
         return redirect()->route('employee.leave.index')
-            ->with('success', "Pengajuan cuti selama {$totalDays} hari berhasil dikirim dan menunggu persetujuan HRD.");
+            ->with('success', 'Permohonan cuti/izin berhasil diajukan untuk ditinjau oleh HRD.');
     }
 
     /**
@@ -80,59 +77,57 @@ class LeaveRequestController extends Controller
     public function adminIndex(Request $request)
     {
         $status = $request->input('status');
-        $search = $request->input('search');
-
         $query = LeaveRequest::with(['user.department', 'approver']);
 
         if ($status) {
             $query->where('status', $status);
         }
 
-        if ($search) {
-            $query->whereHas('user', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('nik', 'like', "%{$search}%");
-            });
-        }
+        $leaveRequests = $query->latest()->paginate(15)->withQueryString();
 
-        $leaves = $query->latest()->paginate(15)->withQueryString();
-
-        return view('admin.leave.index', compact('leaves', 'status', 'search'));
+        return view('admin.leave.index', compact('leaveRequests', 'status'));
     }
 
     /**
-     * Admin Approve Leave Request (with automated quota deduction)
+     * Approve Leave Request
      */
     public function approve(Request $request, $id)
     {
         $leave = LeaveRequest::with('user')->findOrFail($id);
 
         if ($leave->status !== 'pending') {
-            return back()->with('error', 'Pengajuan cuti ini sudah diproses sebelumnya.');
+            return back()->with('error', 'Permohonan cuti ini sudah diproses sebelumnya.');
         }
 
-        DB::transaction(function () use ($leave, $request) {
-            $employee = $leave->user;
+        $user = $leave->user;
 
-            // Deduct leave quota
-            if ($employee->leave_quota >= $leave->total_days) {
-                $employee->decrement('leave_quota', $leave->total_days);
-            } else {
-                $employee->update(['leave_quota' => 0]);
+        // Deduct quota only if annual leave
+        if ($leave->leave_type === 'annual') {
+            if ($user->leave_quota < $leave->total_days) {
+                return back()->with('error', 'Sisa kuota cuti karyawan tidak mencukupi untuk disetujui.');
             }
+            $user->decrement('leave_quota', $leave->total_days);
+        }
 
-            $leave->update([
-                'status' => 'approved',
-                'approved_by' => Auth::id(),
-                'admin_notes' => $request->input('admin_notes', 'Disetujui oleh HRD.'),
-            ]);
-        });
+        $leave->update([
+            'status' => 'approved',
+            'approved_by' => Auth::id(),
+            'admin_notes' => $request->input('admin_notes', 'Disetujui.'),
+        ]);
 
-        return back()->with('success', "Pengajuan cuti {$leave->user->name} berhasil disetujui. Kuota cuti berkurang {$leave->total_days} hari.");
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'APPROVE_LEAVE_REQUEST',
+            'description' => "Menyetujui cuti ({$leave->leave_type}) {$user->name} selama {$leave->total_days} hari.",
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+
+        return back()->with('success', "Permohonan cuti {$user->name} berhasil disetujui.");
     }
 
     /**
-     * Admin Reject Leave Request
+     * Reject Leave Request
      */
     public function reject(Request $request, $id)
     {
@@ -143,7 +138,7 @@ class LeaveRequestController extends Controller
         $leave = LeaveRequest::findOrFail($id);
 
         if ($leave->status !== 'pending') {
-            return back()->with('error', 'Pengajuan cuti ini sudah diproses sebelumnya.');
+            return back()->with('error', 'Permohonan cuti ini sudah diproses sebelumnya.');
         }
 
         $leave->update([
@@ -152,6 +147,6 @@ class LeaveRequestController extends Controller
             'admin_notes' => $request->input('admin_notes'),
         ]);
 
-        return back()->with('success', 'Pengajuan cuti berhasil ditolak.');
+        return back()->with('success', 'Permohonan cuti berhasil ditolak.');
     }
 }

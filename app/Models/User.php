@@ -23,6 +23,10 @@ class User extends Authenticatable
         'position',
         'join_date',
         'salary',
+        'ptkp_status',
+        'npwp',
+        'bpjs_kesehatan_no',
+        'bpjs_ketenagakerjaan_no',
         'leave_quota',
         'phone',
     ];
@@ -101,6 +105,16 @@ class User extends Authenticatable
     public function trainings(): HasMany
     {
         return $this->hasMany(TrainingParticipant::class);
+    }
+
+    public function warningLetters(): HasMany
+    {
+        return $this->hasMany(WarningLetter::class);
+    }
+
+    public function resignations(): HasMany
+    {
+        return $this->hasMany(Resignation::class);
     }
 
     public function isAdmin(): bool
