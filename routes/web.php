@@ -6,14 +6,17 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BusinessTripController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\KudosController;
 use App\Http\Controllers\LeaveRequestController;
 use App\Http\Controllers\LoanController;
+use App\Http\Controllers\NotificationGatewayController;
 use App\Http\Controllers\OrgChartController;
 use App\Http\Controllers\OvertimeController;
 use App\Http\Controllers\PayrollController;
@@ -22,6 +25,8 @@ use App\Http\Controllers\RecruitmentController;
 use App\Http\Controllers\ReimbursementController;
 use App\Http\Controllers\ResignationController;
 use App\Http\Controllers\ShiftController;
+use App\Http\Controllers\ShiftSwapController;
+use App\Http\Controllers\ThrController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\WarningLetterController;
 use Illuminate\Support\Facades\Route;
@@ -45,15 +50,19 @@ Route::middleware(['auth'])->group(function () {
 
     // Shared Printable Documents
     Route::get('/payroll/{id}/slip', [PayrollController::class, 'showSlip'])->name('payroll.slip');
+    Route::get('/thr/{id}/slip', [ThrController::class, 'showSlip'])->name('thr.slip');
+    Route::get('/business-trips/{id}/print', [BusinessTripController::class, 'showPrint'])->name('business-trips.print');
     Route::get('/warning-letters/{id}/print', [WarningLetterController::class, 'showPrint'])->name('warning-letters.print');
     Route::get('/resignations/{id}/paklaring', [ResignationController::class, 'showPaklaring'])->name('resignations.paklaring');
 
-    // Shared Announcements & Documents & Org Chart
+    // Shared Announcements, Documents, Org Chart, Peer Kudos
     Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
     Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
     Route::delete('/documents/{id}', [DocumentController::class, 'destroy'])->name('documents.destroy');
     Route::get('/org-chart', [OrgChartController::class, 'index'])->name('orgchart.index');
+    Route::get('/kudos', [KudosController::class, 'index'])->name('kudos.index');
+    Route::post('/kudos', [KudosController::class, 'store'])->name('kudos.store');
 
     // ==========================================
     // ADMIN HRD ROUTES
@@ -63,6 +72,22 @@ Route::middleware(['auth'])->group(function () {
 
         // Executive Analytics
         Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+
+        // Notification Gateway Simulator
+        Route::get('/notifications', [NotificationGatewayController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/send', [NotificationGatewayController::class, 'send'])->name('notifications.send');
+
+        // THR Payments
+        Route::get('/thr', [ThrController::class, 'adminIndex'])->name('thr.index');
+        Route::post('/thr/generate', [ThrController::class, 'generate'])->name('thr.generate');
+
+        // Business Trips & SPPD
+        Route::get('/business-trips', [BusinessTripController::class, 'adminIndex'])->name('business-trips.index');
+        Route::patch('/business-trips/{id}/approve', [BusinessTripController::class, 'approve'])->name('business-trips.approve');
+
+        // Shift Swaps
+        Route::get('/shift-swaps', [ShiftSwapController::class, 'adminIndex'])->name('shift-swaps.index');
+        Route::patch('/shift-swaps/{id}/approve', [ShiftSwapController::class, 'approve'])->name('shift-swaps.approve');
 
         // Disciplinary & Warning Letters (SP)
         Route::get('/warning-letters', [WarningLetterController::class, 'adminIndex'])->name('warning-letters.index');
@@ -163,6 +188,17 @@ Route::middleware(['auth'])->group(function () {
         // Leave Requests
         Route::get('/leave-requests', [LeaveRequestController::class, 'employeeIndex'])->name('leave.index');
         Route::post('/leave-requests', [LeaveRequestController::class, 'store'])->name('leave.store');
+
+        // Business Trips & SPPD
+        Route::get('/business-trips', [BusinessTripController::class, 'employeeIndex'])->name('business-trips.index');
+        Route::post('/business-trips', [BusinessTripController::class, 'store'])->name('business-trips.store');
+
+        // Shift Swaps
+        Route::get('/shift-swaps', [ShiftSwapController::class, 'employeeIndex'])->name('shift-swaps.index');
+        Route::post('/shift-swaps', [ShiftSwapController::class, 'store'])->name('shift-swaps.store');
+
+        // THR Payments
+        Route::get('/thr', [ThrController::class, 'employeeIndex'])->name('thr.index');
 
         // Warning Letters
         Route::get('/warning-letters', [WarningLetterController::class, 'employeeIndex'])->name('warning-letters.index');

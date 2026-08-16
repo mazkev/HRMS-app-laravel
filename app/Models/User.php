@@ -117,6 +117,26 @@ class User extends Authenticatable
         return $this->hasMany(Resignation::class);
     }
 
+    public function thrPayments(): HasMany
+    {
+        return $this->hasMany(ThrPayment::class);
+    }
+
+    public function businessTrips(): HasMany
+    {
+        return $this->hasMany(BusinessTrip::class);
+    }
+
+    public function kudosReceived(): HasMany
+    {
+        return $this->hasMany(PeerKudos::class, 'receiver_id');
+    }
+
+    public function kudosSent(): HasMany
+    {
+        return $this->hasMany(PeerKudos::class, 'sender_id');
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin_hr';

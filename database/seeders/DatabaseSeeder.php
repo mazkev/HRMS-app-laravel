@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Announcement;
 use App\Models\Attendance;
 use App\Models\AuditLog;
+use App\Models\BusinessTrip;
 use App\Models\CompanyAsset;
 use App\Models\Department;
 use App\Models\EmployeeDocument;
@@ -12,12 +13,16 @@ use App\Models\EmployeeLoan;
 use App\Models\JobApplication;
 use App\Models\JobPosting;
 use App\Models\LeaveRequest;
+use App\Models\NotificationLog;
 use App\Models\Overtime;
 use App\Models\Payroll;
+use App\Models\PeerKudos;
 use App\Models\PerformanceReview;
 use App\Models\Reimbursement;
 use App\Models\Resignation;
 use App\Models\Shift;
+use App\Models\ShiftSwap;
+use App\Models\ThrPayment;
 use App\Models\Training;
 use App\Models\TrainingParticipant;
 use App\Models\User;
@@ -209,18 +214,7 @@ class DatabaseSeeder extends Seeder
             'notes' => 'Terlambat karena kemacetan lalu lintas.',
         ]);
 
-        Attendance::create([
-            'user_id' => $siti->id,
-            'date' => $today,
-            'time_in' => '08:20:00',
-            'latitude' => -6.2088200,
-            'longitude' => 106.8456100,
-            'distance_meters' => 12,
-            'is_office_radius' => true,
-            'status' => 'present',
-        ]);
-
-        // 6. Leave Requests (Annual, Sick with SKD, Maternity)
+        // 6. Leave Requests (Annual & Sick with SKD)
         LeaveRequest::create([
             'user_id' => $budi->id,
             'leave_type' => 'annual',
@@ -237,13 +231,118 @@ class DatabaseSeeder extends Seeder
             'start_date' => Carbon::now()->subDays(10)->toDateString(),
             'end_date' => Carbon::now()->subDays(9)->toDateString(),
             'total_days' => 2,
-            'reason' => 'Istirahat medis pasca rawat jalan (Flu berat & demam tinggi).',
+            'reason' => 'Istirahat medis pasca rawat jalan (Flu berat).',
             'status' => 'approved',
             'approved_by' => $admin->id,
             'admin_notes' => 'Disetujui. Bukti SKD terverifikasi.',
         ]);
 
-        // 7. Overtime
+        // 7. Business Trips (SPPD)
+        BusinessTrip::create([
+            'user_id' => $budi->id,
+            'sppd_number' => 'SPPD/2026/08/001',
+            'destination_city' => 'Surabaya',
+            'purpose' => 'Audit infrastruktur server cloud cabang Jawa Timur dan instalasi disaster recovery system.',
+            'start_date' => Carbon::now()->addDays(5)->toDateString(),
+            'end_date' => Carbon::now()->addDays(8)->toDateString(),
+            'total_days' => 4,
+            'daily_allowance_rate' => 350000.00,
+            'total_allowance' => 1400000.00,
+            'status' => 'approved',
+            'approved_by' => $admin->id,
+            'admin_notes' => 'Disetujui. Tiket dan hotel dipersiapkan oleh tim GA.',
+        ]);
+
+        // 8. Shift Swaps
+        ShiftSwap::create([
+            'requester_id' => $andi->id,
+            'target_user_id' => $budi->id,
+            'swap_date' => Carbon::now()->addDays(2)->toDateString(),
+            'requester_shift_id' => $morningShift->id,
+            'target_shift_id' => $regularShift->id,
+            'reason' => 'Ada keperluan keluarga mendesak di pagi hari.',
+            'status' => 'approved',
+            'approved_by' => $admin->id,
+        ]);
+
+        // 9. THR Payments
+        foreach ([$budi, $siti, $andi, $dewi] as $emp) {
+            $joinDate = Carbon::parse($emp->join_date);
+            $tenure = max(1, $joinDate->diffInMonths(Carbon::now()));
+            $salary = (float) $emp->salary;
+            $thrAmount = ($tenure >= 12) ? $salary : round(($tenure / 12) * $salary, 2);
+
+            ThrPayment::create([
+                'user_id' => $emp->id,
+                'year' => '2026',
+                'holiday_name' => 'Idul Fitri 1447 H',
+                'tenure_months' => $tenure,
+                'basic_salary' => $salary,
+                'thr_amount' => $thrAmount,
+                'payment_date' => Carbon::now()->toDateString(),
+                'status' => 'paid',
+                'notes' => ($tenure >= 12) ? 'Masa kerja >= 12 bulan (1x Gaji Penuh)' : "Masa kerja {$tenure} bulan (Pro-rata Kemnaker)",
+            ]);
+        }
+
+        // 10. Peer Kudos
+        PeerKudos::create([
+            'sender_id' => $admin->id,
+            'receiver_id' => $budi->id,
+            'badge_type' => 'problem_solver',
+            'message' => 'Luar biasa dalam mengimplementasikan sistem absensi biometrik & GPS yang sangat handal!',
+        ]);
+
+        PeerKudos::create([
+            'sender_id' => $budi->id,
+            'receiver_id' => $siti->id,
+            'badge_type' => 'team_player',
+            'message' => 'Terima kasih atas bantuan rekonsiliasi data payroll dan perhitungan pajak PPh 21 TER yang sangat rapi.',
+        ]);
+
+        PeerKudos::create([
+            'sender_id' => $siti->id,
+            'receiver_id' => $budi->id,
+            'badge_type' => 'innovator',
+            'message' => 'Fitur HRMS baru sangat memudahkan pekerjaan divisi finance dan karyawan lainnya!',
+        ]);
+
+        // 11. Notification Gateway Logs
+        NotificationLog::create([
+            'user_id' => $budi->id,
+            'channel' => 'whatsapp',
+            'recipient' => $budi->phone,
+            'subject' => 'Slip Gaji Bulan Ini Telah Diterbitkan 📄',
+            'message' => 'Halo Budi Santoso, slip gaji periode bulan berjalan Anda telah resmi diterbitkan oleh HRD.',
+            'status' => 'sent',
+        ]);
+
+        // 12. Warning Letters (Disciplinary SP)
+        WarningLetter::create([
+            'user_id' => $andi->id,
+            'letter_number' => 'SP/2026/08/001',
+            'level' => 'SP 1',
+            'violation_type' => 'Keterlambatan Berulang Shift Pagi',
+            'description' => 'Tercatat mengalami keterlambatan hadir lebih dari 5 kali dalam periode 1 bulan.',
+            'issued_date' => Carbon::now()->subMonth()->toDateString(),
+            'valid_until' => Carbon::now()->addMonths(5)->toDateString(),
+            'issued_by' => $admin->id,
+            'status' => 'active',
+        ]);
+
+        // 13. Resignations & Paklaring
+        Resignation::create([
+            'user_id' => $dewi->id,
+            'notice_date' => Carbon::now()->subDays(15)->toDateString(),
+            'resign_date' => Carbon::now()->addDays(15)->toDateString(),
+            'reason' => 'Melanjutkan studi magister (S2) ke luar negeri.',
+            'status' => 'approved',
+            'approved_by' => $admin->id,
+            'paklaring_number' => 'PKL/2026/08/001',
+            'exit_clearance_notes' => 'Handover tugas marketing telah selesai. Surat paklaring diterbitkan.',
+        ]);
+
+        // 14. Overtime
         Overtime::create([
             'user_id' => $budi->id,
             'date' => $yesterday,
@@ -256,7 +355,7 @@ class DatabaseSeeder extends Seeder
             'admin_notes' => 'Disetujui untuk rilis patch.',
         ]);
 
-        // 8. Sample Reimbursements
+        // 15. Reimbursements
         Reimbursement::create([
             'user_id' => $budi->id,
             'category' => 'transport',
@@ -268,70 +367,8 @@ class DatabaseSeeder extends Seeder
             'admin_notes' => 'Disetujui sesuai kuitansi.',
         ]);
 
-        // 9. Performance Reviews
-        PerformanceReview::create([
-            'user_id' => $budi->id,
-            'reviewer_id' => $admin->id,
-            'period_year' => '2026',
-            'period_quarter' => 'Q1',
-            'kpi_score' => 92,
-            'attendance_score' => 95,
-            'teamwork_score' => 88,
-            'final_grade' => 'A',
-            'feedback' => 'Kontribusi sangat signifikan dalam pembaruan arsitektur HRMS dan sistem absensi biometrik.',
-            'status' => 'final',
-        ]);
-
-        // 10. Announcements
-        Announcement::create([
-            'user_id' => $admin->id,
-            'title' => 'Jadwal Libur Nasional & Cuti Bersama Idul Fitri 1447 H',
-            'category' => 'holiday',
-            'content' => "Diberitahukan kepada seluruh karyawan PT Maju Nusantara bahwa libur nasional dan cuti bersama akan berlangsung sesuai keputusan SKB 3 Menteri.\n\nBagi divisi yang bertugas piket on-call, mohon berkoordinasi dengan kepala departemen masing-masing.",
-            'is_pinned' => true,
-        ]);
-
-        // 11. ATS & Job Postings
-        $devJob = JobPosting::create([
-            'title' => 'Senior Fullstack Engineer (Laravel & React)',
-            'department_id' => $itDept->id,
-            'type' => 'full_time',
-            'experience_level' => '3 - 5 Tahun',
-            'salary_min' => 15000000.00,
-            'salary_max' => 22000000.00,
-            'description' => 'Bertanggung jawab mengembangkan core application HRMS dan arsitektur enterprise microservices.',
-            'requirements' => 'Keahlian mendalam dalam PHP, Laravel, MySQL, REST API, Tailwind CSS, dan Docker.',
-            'status' => 'active',
-        ]);
-
-        // Candidate Applications
-        JobApplication::create([
-            'job_posting_id' => $devJob->id,
-            'candidate_name' => 'Rian Hidayat',
-            'candidate_email' => 'rian.hidayat@example.com',
-            'candidate_phone' => '081233445566',
-            'status' => 'hired',
-            'interview_date' => Carbon::now()->subDays(2)->toDateTimeString(),
-            'notes' => 'Lulus tes koding dengan nilai 98/100. Rekomendasi offering letter disetujui.',
-        ]);
-
-        // 12. Company Assets
-        CompanyAsset::create([
-            'user_id' => $budi->id,
-            'asset_code' => 'AST-LAP-001',
-            'name' => 'MacBook Pro 14 M3 Pro (18GB / 512GB SSD)',
-            'category' => 'laptop',
-            'serial_number' => 'C02G899XMD6T',
-            'purchase_date' => '2024-01-10',
-            'purchase_cost' => 32000000.00,
-            'condition' => 'good',
-            'status' => 'in_use',
-            'assigned_date' => '2024-01-15',
-            'notes' => 'Diserahterimakan lengkap dengan charger 70W dan laptop bag.',
-        ]);
-
-        // 13. Employee Loans
-        $andiLoan = EmployeeLoan::create([
+        // 16. Employee Loans
+        EmployeeLoan::create([
             'user_id' => $andi->id,
             'amount' => 3000000.00,
             'tenor_months' => 3,
@@ -344,7 +381,7 @@ class DatabaseSeeder extends Seeder
             'admin_notes' => 'Disetujui. Telah terpotong 1x cicilan di payroll bulan lalu.',
         ]);
 
-        // 14. Trainings
+        // 17. Trainings
         $trainCloud = Training::create([
             'title' => 'Mastering Microservices with Docker & Kubernetes',
             'trainer_name' => 'Hendra Wijaya, Solution Architect',
@@ -363,41 +400,16 @@ class DatabaseSeeder extends Seeder
             'status' => 'enrolled',
         ]);
 
-        // 15. Warning Letters (Disciplinary SP)
-        WarningLetter::create([
-            'user_id' => $andi->id,
-            'letter_number' => 'SP/2026/08/001',
-            'level' => 'SP 1',
-            'violation_type' => 'Keterlambatan Berulang Shift Pagi',
-            'description' => 'Tercatat mengalami keterlambatan hadir lebih dari 5 kali dalam periode 1 bulan tanpa konfirmasi terlebih dahulu.',
-            'issued_date' => Carbon::now()->subMonth()->toDateString(),
-            'valid_until' => Carbon::now()->addMonths(5)->toDateString(),
-            'issued_by' => $admin->id,
-            'status' => 'active',
-        ]);
-
-        // 16. Resignations & Paklaring
-        Resignation::create([
-            'user_id' => $dewi->id,
-            'notice_date' => Carbon::now()->subDays(15)->toDateString(),
-            'resign_date' => Carbon::now()->addDays(15)->toDateString(),
-            'reason' => 'Melanjutkan studi magister (S2) ke luar negeri.',
-            'status' => 'approved',
-            'approved_by' => $admin->id,
-            'paklaring_number' => 'PKL/2026/08/001',
-            'exit_clearance_notes' => 'Handover tugas marketing telah selesai. Surat paklaring diterbitkan.',
-        ]);
-
-        // 17. Audit Logs
+        // 18. Audit Logs
         AuditLog::create([
             'user_id' => $admin->id,
             'action' => 'SYSTEM_INITIALIZATION',
-            'description' => 'Menginisialisasi HRMS Tier-1 dengan kepatuhan PPh 21 TER, BPJS, Modul SP, Resignasi, dan AI Helpdesk.',
+            'description' => 'Menginisialisasi HRMS Premier Enterprise Suite dengan THR, SPPD, Tukar Shift, WhatsApp Gateway, dan Kudos Wall of Fame.',
             'ip_address' => '127.0.0.1',
             'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
         ]);
 
-        // 18. Payroll Records with PPh 21 TER and BPJS
+        // 19. Payroll Records with PPh 21 TER and BPJS
         $prevMonth = Carbon::now()->subMonth()->format('Y-m');
         foreach ([$budi, $siti, $andi, $dewi] as $emp) {
             $basicSalary = (float) $emp->salary;

@@ -94,7 +94,7 @@
             </div>
             <div>
                 <h1 class="font-extrabold text-base text-slate-900 tracking-tight">PT MAJU</h1>
-                <p class="text-[11px] text-blue-600 font-bold tracking-wider uppercase">Tier-1 HR Enterprise</p>
+                <p class="text-[11px] text-blue-600 font-bold tracking-wider uppercase">Premier HR Enterprise</p>
             </div>
         </div>
 
@@ -116,6 +116,11 @@
                     <span>Executive Analytics</span>
                 </a>
 
+                <a href="{{ route('admin.notifications.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.notifications.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-tower-broadcast w-4 text-center {{ request()->routeIs('admin.notifications.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Gateway WA / Email</span>
+                </a>
+
                 <a href="{{ route('admin.attendance.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.attendance.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-camera-retro w-4 text-center {{ request()->routeIs('admin.attendance.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Log Absensi & GPS</span>
@@ -124,6 +129,16 @@
                 <a href="{{ route('admin.leave.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.leave.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-calendar-check w-4 text-center {{ request()->routeIs('admin.leave.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Persetujuan Cuti & SKD</span>
+                </a>
+
+                <a href="{{ route('admin.business-trips.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.business-trips.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-plane-departure w-4 text-center {{ request()->routeIs('admin.business-trips.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Surat Tugas (SPPD)</span>
+                </a>
+
+                <a href="{{ route('admin.shift-swaps.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.shift-swaps.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-clock-rotate-left w-4 text-center {{ request()->routeIs('admin.shift-swaps.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Tukar Shift Kerja</span>
                 </a>
 
                 <a href="{{ route('admin.warning-letters.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.warning-letters.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -151,6 +166,11 @@
                     <span>Pinjaman & Kasbon</span>
                 </a>
 
+                <a href="{{ route('admin.thr.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.thr.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-gift w-4 text-center {{ request()->routeIs('admin.thr.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Tunjangan Hari Raya (THR)</span>
+                </a>
+
                 <a href="{{ route('admin.performance.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.performance.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-award w-4 text-center {{ request()->routeIs('admin.performance.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Penilaian Kinerja (KPI)</span>
@@ -167,8 +187,13 @@
                 </a>
 
                 <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    Talenta, Struktur & Aset
+                    Talenta & Apresiasi
                 </div>
+
+                <a href="{{ route('kudos.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('kudos.*') ? 'bg-amber-50 text-amber-800 border-l-4 border-amber-500 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-trophy w-4 text-center {{ request()->routeIs('kudos.*') ? 'text-amber-500' : 'text-slate-400' }}"></i>
+                    <span>Apresiasi (Wall of Fame)</span>
+                </a>
 
                 <a href="{{ route('orgchart.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('orgchart.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-sitemap w-4 text-center {{ request()->routeIs('orgchart.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
@@ -248,6 +273,21 @@
                     <span>Pengajuan Cuti & SKD</span>
                 </a>
 
+                <a href="{{ route('employee.business-trips.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.business-trips.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-plane-departure w-4 text-center {{ request()->routeIs('employee.business-trips.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Tugas Dinas (SPPD)</span>
+                </a>
+
+                <a href="{{ route('employee.shift-swaps.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.shift-swaps.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-clock-rotate-left w-4 text-center {{ request()->routeIs('employee.shift-swaps.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Tukar Shift Kerja</span>
+                </a>
+
+                <a href="{{ route('employee.thr.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.thr.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-gift w-4 text-center {{ request()->routeIs('employee.thr.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
+                    <span>Tunjangan Hari Raya (THR)</span>
+                </a>
+
                 <a href="{{ route('employee.warning-letters.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.warning-letters.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-triangle-exclamation w-4 text-center {{ request()->routeIs('employee.warning-letters.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Surat Peringatan Saya</span>
@@ -286,6 +326,11 @@
                 <a href="{{ route('employee.calendar.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.calendar.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-calendar-days w-4 text-center {{ request()->routeIs('employee.calendar.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Kalender Cuti Tim</span>
+                </a>
+
+                <a href="{{ route('kudos.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('kudos.*') ? 'bg-amber-50 text-amber-800 border-l-4 border-amber-500 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                    <i class="fa-solid fa-trophy w-4 text-center {{ request()->routeIs('kudos.*') ? 'text-amber-500' : 'text-slate-400' }}"></i>
+                    <span>Apresiasi (Wall of Fame)</span>
                 </a>
 
                 <a href="{{ route('orgchart.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('orgchart.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
@@ -404,7 +449,7 @@
 
         <!-- Footer -->
         <footer class="py-4 px-8 border-t border-slate-200/70 bg-white text-center text-xs text-slate-400">
-            &copy; {{ date('Y') }} PT Maju Nusantara HR Management System. Indonesian Compliance Edition.
+            &copy; {{ date('Y') }} PT Maju Nusantara HR Management System. Premier Global Enterprise Edition.
         </footer>
     </div>
 
@@ -449,11 +494,11 @@
                     <button onclick="askAiQuestion('Kapan tanggal gajian dan potongan apa saja?')" class="px-2.5 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11px] font-medium transition">
                         💰 Jadwal gajian & PPh 21?
                     </button>
-                    <button onclick="askAiQuestion('Bagaimana syarat pinjaman kasbon?')" class="px-2.5 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11px] font-medium transition">
-                        💸 Syarat kasbon kantor?
+                    <button onclick="askAiQuestion('Bagaimana perhitungan THR keagamaan?')" class="px-2.5 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11px] font-medium transition">
+                        🕌 Aturan THR Keagamaan?
                     </button>
-                    <button onclick="askAiQuestion('Bagaimana aturan cuti melahirkan dan sakit?')" class="px-2.5 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11px] font-medium transition">
-                        🏥 Cuti sakit & melahirkan?
+                    <button onclick="askAiQuestion('Bagaimana syarat SPPD dinas luar kota?')" class="px-2.5 py-1 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-[11px] font-medium transition">
+                        ✈️ Syarat SPPD luar kota?
                     </button>
                 </div>
             </div>
@@ -525,20 +570,20 @@
 
                 if (lowerQ.includes('cuti') && (lowerQ.includes('sisa') || lowerQ.includes('berapa'))) {
                     ans = `Sisa kuota cuti tahunan Anda saat ini adalah <strong>{{ Auth::user()->leave_quota }} Hari</strong>. Pengajuan cuti dapat dilakukan melalui menu <strong>Pengajuan Cuti & SKD</strong>.`;
+                } else if (lowerQ.includes('thr') || lowerQ.includes('hari raya')) {
+                    ans = `Perhitungan <strong>Tunjangan Hari Raya (THR)</strong> mengikuti regulasi Kemnaker RI. Masa kerja &ge; 12 bulan berhak atas <strong>1x Gaji Penuh</strong>, sedangkan masa kerja &lt; 12 bulan dihitung <strong>pro-rata</strong>. Rincian dan slip dapat diakses di menu <strong>Tunjangan Hari Raya (THR)</strong>.`;
+                } else if (lowerQ.includes('sppd') || lowerQ.includes('dinas') || lowerQ.includes('perjalanan')) {
+                    ans = `Perjalanan dinas luar kota/negeri difasilitasi dengan uang saku harian (*per diem allowance*) sebesar <strong>Rp 350.000 / hari</strong> di luar tiket dan hotel. Lembar Surat Tugas SPPD resmi diterbitkan otomatis setelah disetujui HRD.`;
+                } else if (lowerQ.includes('tukar') && lowerQ.includes('shift')) {
+                    ans = `Pertukaran shift kerja dapat diajukan ke sesama rekan satu divisi melalui menu <strong>Tukar Shift Kerja</strong> dan memerlukan persetujuan Supervisor/HRD.`;
+                } else if (lowerQ.includes('kudos') || lowerQ.includes('apresiasi')) {
+                    ans = `Anda dapat mengirimkan lencana apresiasi Kudos ke rekan kerja melalui menu <strong>Apresiasi (Wall of Fame)</strong> untuk mengapresiasi kerja tim, inovasi, dan dedikasi rekan kerja.`;
                 } else if (lowerQ.includes('gaji') || lowerQ.includes('gajian') || lowerQ.includes('payroll') || lowerQ.includes('pph')) {
                     ans = `Gaji bulanan dibayarkan pada <strong>tanggal 25 hingga akhir bulan</strong>. Rincian gaji telah menghitung otomatis <strong>Pajak PPh 21 (TER 2024)</strong>, <strong>BPJS Kesehatan (1%)</strong>, <strong>BPJS Ketenagakerjaan (3%)</strong>, dan cicilan kasbon jika ada. Anda dapat mengunduh slip resmi di menu <strong>Slip Gaji Saya</strong>.`;
                 } else if (lowerQ.includes('kasbon') || lowerQ.includes('pinjam') || lowerQ.includes('pinjaman')) {
                     ans = `Fasilitas kasbon internal PT Maju memiliki <strong>bunga 0%</strong> dengan plafon s/d Rp 20.000.000 dan pilihan tenor 1 s/d 12 bulan. Potongan cicilan dilakukan otomatis melalui Payroll setiap akhir bulan.`;
                 } else if (lowerQ.includes('sakit') || lowerQ.includes('dokter') || lowerQ.includes('skd') || lowerQ.includes('melahirkan')) {
                     ans = `Cuti sakit mewajibkan unggah <strong>Surat Keterangan Dokter (SKD)</strong>. Cuti Melahirkan diberikan selama <strong>90 hari (3 bulan)</strong> dan <strong>TIDAK MEMOTONG</strong> kuota cuti tahunan Anda.`;
-                } else if (lowerQ.includes('lembur') || lowerQ.includes('overtime')) {
-                    ans = `Pengajuan lembur harus diajukan di menu <strong>Pengajuan Lembur</strong> dengan persetujuan kepala departemen minimal 1 hari kerja sebelum pelaksanaan.`;
-                } else if (lowerQ.includes('reimburse') || lowerQ.includes('klaim')) {
-                    ans = `Klaim reimbursement operasional/medis dapat diajukan dengan melampirkan foto kuitansi/struk pembayaran asli maksimal 14 hari setelah transaksi dilakukan.`;
-                } else if (lowerQ.includes('sp') || lowerQ.includes('peringatan') || lowerQ.includes('disiplin')) {
-                    ans = `Surat Peringatan (SP 1, SP 2, SP 3) memiliki masa berlaku aktif selama <strong>6 bulan</strong> dan diterbitkan resmi oleh HRD apabila terdapat pelanggaran kedisiplinan.`;
-                } else if (lowerQ.includes('resign') || lowerQ.includes('paklaring') || lowerQ.includes('keluar')) {
-                    ans = `Pengajuan pengunduran diri mengikuti kebijakan <strong>1-Month Notice</strong> (minimal 30 hari). Setelah exit clearance disetujui, Anda dapat langsung mengunduh <strong>Surat Pengalaman Kerja (Paklaring)</strong> resmi berformat PDF.`;
                 }
 
                 const botHtml = `
