@@ -1,106 +1,108 @@
 @extends('layouts.employee_app')
 
 @section('title', 'Slip Gaji Saya')
-@section('page-title', 'Informasi Penggajian & Slip Gaji')
-@section('page-subtitle', 'Lihat rincian gaji bulanan, tunjangan, dan unduh slip gaji resmi Anda.')
+@section('page-title', 'Slip Gaji Saya 💰')
+@section('page-subtitle', 'Rincian penerimaan gaji bulanan, potongan PPh 21 TER, BPJS, dan unduh slip resmi')
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-4">
 
-    <!-- Salary Overview Card -->
-    <div class="saas-card p-6 border-slate-200 bg-gradient-to-r from-blue-900 to-slate-900 text-white border-none shadow-md">
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-white text-2xl">
-                    <i class="fa-solid fa-wallet text-blue-300"></i>
-                </div>
-                <div>
-                    <span class="text-xs font-bold text-blue-200 uppercase tracking-wider">Gaji Pokok Terdaftar</span>
-                    <h3 class="text-2xl font-black text-white font-mono mt-0.5">Rp {{ number_format($user->salary, 0, ',', '.') }}</h3>
-                    <p class="text-xs text-slate-300 mt-1">{{ $user->position }} • {{ $user->department->name ?? '-' }}</p>
-                </div>
-            </div>
-            <div class="text-center sm:text-right">
-                <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold">
-                    Payroll Aktif Bulanan
-                </span>
-            </div>
+    <!-- 1. SALARY OVERVIEW WALLET -->
+    <div class="saas-card p-4 bg-gradient-to-br from-blue-800 to-slate-900 text-white shadow-md">
+        <div class="flex items-center justify-between mb-1.5">
+            <span class="text-[10px] font-extrabold text-blue-200 uppercase tracking-wider">Gaji Pokok Terdaftar</span>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-500/30 border border-emerald-400/40 text-[10px] font-bold text-emerald-300">
+                Payroll Aktif
+            </span>
+        </div>
+
+        <h3 class="text-2xl font-black text-white font-mono">
+            Rp {{ number_format($user->salary, 0, ',', '.') }}
+        </h3>
+        <p class="text-[11px] text-blue-200 mt-1">{{ $user->position }} • {{ $user->department->name ?? 'PT Maju' }}</p>
+
+        <div class="mt-3 pt-2.5 border-t border-white/15 flex items-center justify-between text-[10px] text-blue-200">
+            <span>Status PTKP: <strong>{{ $user->ptkp_status ?? 'TK/0' }}</strong></span>
+            <span>Jadwal Gajian: <strong>Tgl 25 - Akhir Bulan</strong></span>
         </div>
     </div>
 
-    <!-- Monthly Slips Table -->
-    <div class="saas-card rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
-            <div>
-                <h4 class="text-sm font-bold text-slate-900">Riwayat Slip Gaji</h4>
-                <p class="text-xs text-slate-500">Daftar slip pembayaran gaji bulanan yang telah diterbitkan HRD</p>
-            </div>
-        </div>
+    <!-- 2. MOBILE PAYSLIP HISTORY CARDS -->
+    <div class="saas-card p-5">
+        <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-3">Daftar Slip Gaji Bulanan</h4>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-                <thead>
-                    <tr class="border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider bg-slate-50/50">
-                        <th class="py-3 px-4">Periode Bulan</th>
-                        <th class="py-3 px-4">Gaji Pokok</th>
-                        <th class="py-3 px-4">Tunjangan</th>
-                        <th class="py-3 px-4">Potongan Telat</th>
-                        <th class="py-3 px-4">Total Gaji Bersih</th>
-                        <th class="py-3 px-4 text-center">Status</th>
-                        <th class="py-3 px-4 text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                    @forelse($payrolls as $p)
-                        <tr class="hover:bg-slate-50/80 transition">
-                            <td class="py-3.5 px-4 font-bold text-slate-900">
+        <div class="space-y-3">
+            @forelse($payrolls as $p)
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+                    <div class="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase block">Periode</span>
+                            <h4 class="text-xs font-extrabold text-slate-900">
                                 {{ \Carbon\Carbon::createFromFormat('Y-m', $p->period_month)->translatedFormat('F Y') }}
-                            </td>
+                            </h4>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 uppercase">
+                            {{ $p->status }}
+                        </span>
+                    </div>
 
-                            <td class="py-3.5 px-4 font-mono text-slate-700">
-                                Rp {{ number_format($p->basic_salary, 0, ',', '.') }}
-                            </td>
+                    <!-- Breakdown Numbers -->
+                    <div class="space-y-1.5 text-xs">
+                        <div class="flex justify-between text-slate-600">
+                            <span>Gaji Pokok:</span>
+                            <span class="font-mono font-semibold">Rp {{ number_format($p->basic_salary, 0, ',', '.') }}</span>
+                        </div>
+                        <div class="flex justify-between text-emerald-700">
+                            <span>Tunjangan Tetap:</span>
+                            <span class="font-mono font-semibold">+Rp {{ number_format($p->allowances, 0, ',', '.') }}</span>
+                        </div>
+                        @if($p->pph21_amount > 0)
+                            <div class="flex justify-between text-rose-600">
+                                <span>Pajak PPh 21 (TER):</span>
+                                <span class="font-mono font-semibold">-Rp {{ number_format($p->pph21_amount, 0, ',', '.') }}</span>
+                            </div>
+                        @endif
+                        @if($p->bpjs_kesehatan_deduction > 0)
+                            <div class="flex justify-between text-rose-600">
+                                <span>BPJS Kesehatan (1%):</span>
+                                <span class="font-mono font-semibold">-Rp {{ number_format($p->bpjs_kesehatan_deduction, 0, ',', '.') }}</span>
+                            </div>
+                        @endif
+                        @if($p->bpjs_tk_deduction > 0)
+                            <div class="flex justify-between text-rose-600">
+                                <span>BPJS TK (JHT & JP 3%):</span>
+                                <span class="font-mono font-semibold">-Rp {{ number_format($p->bpjs_tk_deduction, 0, ',', '.') }}</span>
+                            </div>
+                        @endif
+                        @if($p->loan_deduction > 0)
+                            <div class="flex justify-between text-cyan-700">
+                                <span>Cicilan Kasbon:</span>
+                                <span class="font-mono font-semibold">-Rp {{ number_format($p->loan_deduction, 0, ',', '.') }}</span>
+                            </div>
+                        @endif
+                    </div>
 
-                            <td class="py-3.5 px-4 font-mono text-emerald-700">
-                                +Rp {{ number_format($p->allowances, 0, ',', '.') }}
-                            </td>
+                    <!-- Net Salary Banner -->
+                    <div class="p-2.5 rounded-xl bg-gradient-to-r from-blue-900 to-slate-900 text-white flex items-center justify-between">
+                        <span class="text-[10px] font-bold text-blue-200 uppercase">Gaji Bersih (THP):</span>
+                        <h4 class="text-sm font-black text-emerald-300 font-mono">
+                            Rp {{ number_format($p->net_salary, 0, ',', '.') }}
+                        </h4>
+                    </div>
 
-                            <td class="py-3.5 px-4 font-mono text-rose-600">
-                                -Rp {{ number_format($p->late_deduction, 0, ',', '.') }}
-                            </td>
-
-                            <td class="py-3.5 px-4 font-mono font-bold text-slate-900">
-                                Rp {{ number_format($p->net_salary, 0, ',', '.') }}
-                            </td>
-
-                            <td class="py-3.5 px-4 text-center">
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase">
-                                    {{ $p->status }}
-                                </span>
-                            </td>
-
-                            <td class="py-3.5 px-4 text-center">
-                                <a href="{{ route('payroll.slip', $p->id) }}" target="_blank"
-                                    class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition inline-flex items-center gap-1.5">
-                                    <i class="fa-solid fa-file-arrow-down"></i>
-                                    <span>Lihat & Cetak Slip</span>
-                                </a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="text-center py-10 text-slate-400">
-                                <i class="fa-solid fa-receipt text-3xl mb-2 text-slate-300"></i>
-                                <p class="text-xs font-medium">Belum ada slip gaji yang diterbitkan untuk akun Anda.</p>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        <div class="mt-4 pt-4 border-t border-slate-100">
-            {{ $payrolls->links() }}
+                    <!-- Print Action Button -->
+                    <a href="{{ route('payroll.slip', $p->id) }}" target="_blank"
+                        class="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs shadow-md shadow-blue-500/20 flex items-center justify-center gap-1.5 transition active:scale-95">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Cetak / Unduh Slip Gaji PDF</span>
+                    </a>
+                </div>
+            @empty
+                <div class="text-center py-6 text-slate-400 text-xs">
+                    <i class="fa-solid fa-file-invoice-dollar text-3xl mb-1 text-slate-300"></i>
+                    <p>Belum ada slip gaji yang diterbitkan.</p>
+                </div>
+            @endforelse
         </div>
     </div>
 
