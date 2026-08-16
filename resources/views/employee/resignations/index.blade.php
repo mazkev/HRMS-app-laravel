@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.employee_app')
 
 @section('title', 'Resignasi & Paklaring')
 @section('page-title', 'Pengunduran Diri (Resignasi) & Surat Pengalaman Kerja')

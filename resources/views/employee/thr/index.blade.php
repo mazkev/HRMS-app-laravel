@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.employee_app')
 
 @section('title', 'Tunjangan Hari Raya (THR) Saya')
 @section('page-title', 'Tunjangan Hari Raya Keagamaan (THR)')

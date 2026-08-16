@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.employee_app')
 
 @section('title', 'Rapor Kinerja Saya')
 @section('page-title', 'Rapor Penilaian Kinerja (KPI Scorecard)')

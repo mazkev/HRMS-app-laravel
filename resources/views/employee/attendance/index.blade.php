@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.employee_app')
 
 @section('title', 'Absensi Kamera & GPS')
 @section('page-title', 'Absensi Kamera & Verifikasi GPS')

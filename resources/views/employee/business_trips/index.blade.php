@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.employee_app')
 
 @section('title', 'Perjalanan Dinas (SPPD) Saya')
 @section('page-title', 'Surat Perintah Perjalanan Dinas (SPPD)')

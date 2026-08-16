@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.employee_app')
 
 @section('title', 'Slip Gaji Saya')
 @section('page-title', 'Informasi Penggajian & Slip Gaji')

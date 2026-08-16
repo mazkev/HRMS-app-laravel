@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.employee_app')
 
 @section('title', 'Pelatihan & Upskilling')
 @section('page-title', 'Katalog Pelatihan & Sertifikasi (LMS Lite)')

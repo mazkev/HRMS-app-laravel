@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.employee_app')
 
 @section('title', 'Surat Peringatan Saya')
 @section('page-title', 'Catatan Kedisiplinan & Surat Peringatan')
