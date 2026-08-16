@@ -456,6 +456,38 @@
 
         btnCapture.classList.add('hidden');
         btnRetake.classList.remove('hidden');
+
+        // Determine if Clock-In or Clock-Out
+        const isClockOut = {{ ($todayAttendance && !$todayAttendance->time_out) ? 'true' : 'false' }};
+        const formId = isClockOut ? 'clockOutForm' : 'clockInForm';
+        const inputId = isClockOut ? 'clockOutImage' : 'clockInImage';
+        const actionLabel = isClockOut ? 'Absen Pulang (Clock-Out)' : 'Absen Masuk (Clock-In)';
+
+        // Auto-assign captured image to hidden inputs
+        if (document.getElementById(inputId)) {
+            document.getElementById(inputId).value = capturedBase64;
+        }
+
+        // Prompt instant submission confirmation
+        Swal.fire({
+            title: 'Foto Selfie Berhasil!',
+            text: `Kirim data ${actionLabel} sekarang?`,
+            imageUrl: capturedBase64,
+            imageWidth: 200,
+            imageHeight: 150,
+            imageAlt: 'Selfie Preview',
+            showCancelButton: true,
+            confirmButtonColor: '#059669',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: '<i class="fa-solid fa-paper-plane mr-1"></i> Ya, Kirim Absensi!',
+            cancelButtonText: 'Foto Ulang'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(formId).submit();
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                retakeSnapshot();
+            }
+        });
     }
 
     function retakeSnapshot() {
