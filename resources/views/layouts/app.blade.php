@@ -2,7 +2,7 @@
 <html lang="id" class="h-full bg-slate-50">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'HRMS') - PT Maju</title>
 
@@ -85,17 +85,29 @@
 </head>
 <body class="h-full flex bg-slate-50 text-slate-800 antialiased selection:bg-blue-600 selection:text-white">
 
-    <!-- Sidebar -->
-    <aside class="w-64 bg-white border-r border-slate-200/90 flex flex-col fixed inset-y-0 z-30 transition-all duration-300">
+    <!-- Mobile Drawer Backdrop -->
+    <div id="sidebarBackdrop" onclick="toggleMobileSidebar()" 
+        class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity duration-300 opacity-0"></div>
+
+    <!-- Responsive Sidebar (Drawer on Mobile, Fixed on Desktop) -->
+    <aside id="appSidebar" 
+        class="w-72 bg-white border-r border-slate-200/90 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300 transform -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none">
+        
         <!-- Brand Header -->
-        <div class="h-20 flex items-center px-6 border-b border-slate-100 gap-3">
-            <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-                <i class="fa-solid fa-layer-group text-lg"></i>
+        <div class="h-20 flex items-center justify-between px-6 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                    <i class="fa-solid fa-layer-group text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-base text-slate-900 tracking-tight">PT MAJU</h1>
+                    <p class="text-[10px] text-blue-600 font-bold tracking-wider uppercase">Premier HR Enterprise</p>
+                </div>
             </div>
-            <div>
-                <h1 class="font-extrabold text-base text-slate-900 tracking-tight">PT MAJU</h1>
-                <p class="text-[11px] text-blue-600 font-bold tracking-wider uppercase">Premier HR Enterprise</p>
-            </div>
+            <!-- Close Button on Mobile Drawer -->
+            <button type="button" onclick="toggleMobileSidebar()" class="lg:hidden w-8 h-8 rounded-lg bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center text-sm">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
 
         <!-- Navigation Menu -->
@@ -106,82 +118,82 @@
                     Operasional & Eksekutif
                 </div>
 
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-chart-pie w-4 text-center {{ request()->routeIs('admin.dashboard') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Dashboard</span>
                 </a>
 
-                <a href="{{ route('admin.analytics.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.analytics.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.analytics.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.analytics.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-chart-line w-4 text-center {{ request()->routeIs('admin.analytics.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Executive Analytics</span>
                 </a>
 
-                <a href="{{ route('admin.notifications.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.notifications.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.notifications.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.notifications.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-tower-broadcast w-4 text-center {{ request()->routeIs('admin.notifications.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Gateway WA / Email</span>
                 </a>
 
-                <a href="{{ route('admin.attendance.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.attendance.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.attendance.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.attendance.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-camera-retro w-4 text-center {{ request()->routeIs('admin.attendance.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Log Absensi & GPS</span>
                 </a>
 
-                <a href="{{ route('admin.leave.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.leave.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.leave.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.leave.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-calendar-check w-4 text-center {{ request()->routeIs('admin.leave.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Persetujuan Cuti & SKD</span>
                 </a>
 
-                <a href="{{ route('admin.business-trips.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.business-trips.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.business-trips.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.business-trips.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-plane-departure w-4 text-center {{ request()->routeIs('admin.business-trips.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Surat Tugas (SPPD)</span>
                 </a>
 
-                <a href="{{ route('admin.shift-swaps.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.shift-swaps.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.shift-swaps.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.shift-swaps.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-clock-rotate-left w-4 text-center {{ request()->routeIs('admin.shift-swaps.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Tukar Shift Kerja</span>
                 </a>
 
-                <a href="{{ route('admin.warning-letters.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.warning-letters.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.warning-letters.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.warning-letters.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-triangle-exclamation w-4 text-center {{ request()->routeIs('admin.warning-letters.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Surat Peringatan (SP)</span>
                 </a>
 
-                <a href="{{ route('admin.resignations.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.resignations.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.resignations.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.resignations.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-user-xmark w-4 text-center {{ request()->routeIs('admin.resignations.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Offboarding & Paklaring</span>
                 </a>
 
-                <a href="{{ route('admin.overtime.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.overtime.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.overtime.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.overtime.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-business-time w-4 text-center {{ request()->routeIs('admin.overtime.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Persetujuan Lembur</span>
                 </a>
 
-                <a href="{{ route('admin.reimbursements.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.reimbursements.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.reimbursements.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.reimbursements.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-receipt w-4 text-center {{ request()->routeIs('admin.reimbursements.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Klaim Reimbursement</span>
                 </a>
 
-                <a href="{{ route('admin.loans.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.loans.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.loans.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.loans.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-hand-holding-dollar w-4 text-center {{ request()->routeIs('admin.loans.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Pinjaman & Kasbon</span>
                 </a>
 
-                <a href="{{ route('admin.thr.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.thr.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.thr.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.thr.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-gift w-4 text-center {{ request()->routeIs('admin.thr.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Tunjangan Hari Raya (THR)</span>
                 </a>
 
-                <a href="{{ route('admin.performance.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.performance.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.performance.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.performance.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-award w-4 text-center {{ request()->routeIs('admin.performance.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Penilaian Kinerja (KPI)</span>
                 </a>
 
-                <a href="{{ route('admin.payroll.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.payroll.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.payroll.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.payroll.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-file-invoice-dollar w-4 text-center {{ request()->routeIs('admin.payroll.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Penggajian & PPh 21</span>
                 </a>
 
-                <a href="{{ route('admin.calendar.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.calendar.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.calendar.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.calendar.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-calendar-days w-4 text-center {{ request()->routeIs('admin.calendar.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Kalender Cuti Tim</span>
                 </a>
@@ -190,27 +202,27 @@
                     Talenta & Apresiasi
                 </div>
 
-                <a href="{{ route('kudos.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('kudos.*') ? 'bg-amber-50 text-amber-800 border-l-4 border-amber-500 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('kudos.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('kudos.*') ? 'bg-amber-50 text-amber-800 border-l-4 border-amber-500 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-trophy w-4 text-center {{ request()->routeIs('kudos.*') ? 'text-amber-500' : 'text-slate-400' }}"></i>
                     <span>Apresiasi (Wall of Fame)</span>
                 </a>
 
-                <a href="{{ route('orgchart.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('orgchart.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('orgchart.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('orgchart.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-sitemap w-4 text-center {{ request()->routeIs('orgchart.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Struktur Organisasi</span>
                 </a>
 
-                <a href="{{ route('admin.recruitment.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.recruitment.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.recruitment.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.recruitment.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-user-plus w-4 text-center {{ request()->routeIs('admin.recruitment.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Rekrutmen & ATS</span>
                 </a>
 
-                <a href="{{ route('admin.assets.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.assets.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.assets.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.assets.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-laptop w-4 text-center {{ request()->routeIs('admin.assets.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Inventaris Aset</span>
                 </a>
 
-                <a href="{{ route('admin.trainings.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.trainings.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.trainings.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.trainings.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-graduation-cap w-4 text-center {{ request()->routeIs('admin.trainings.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Pelatihan (LMS Lite)</span>
                 </a>
@@ -219,17 +231,17 @@
                     Informasi & Audit
                 </div>
 
-                <a href="{{ route('announcements.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('announcements.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('announcements.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('announcements.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-bullhorn w-4 text-center {{ request()->routeIs('announcements.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Papan Pengumuman</span>
                 </a>
 
-                <a href="{{ route('documents.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('documents.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('documents.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('documents.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-folder-open w-4 text-center {{ request()->routeIs('documents.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Brankas Dokumen</span>
                 </a>
 
-                <a href="{{ route('admin.audit.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.audit.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.audit.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.audit.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-shield-halved w-4 text-center {{ request()->routeIs('admin.audit.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Audit Trail Log</span>
                 </a>
@@ -238,17 +250,17 @@
                     Master Data
                 </div>
 
-                <a href="{{ route('admin.employees.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.employees.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.employees.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.employees.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-user-group w-4 text-center {{ request()->routeIs('admin.employees.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Data Karyawan</span>
                 </a>
 
-                <a href="{{ route('admin.departments.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.departments.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.departments.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.departments.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-building-user w-4 text-center {{ request()->routeIs('admin.departments.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Departemen</span>
                 </a>
 
-                <a href="{{ route('admin.shifts.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.shifts.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('admin.shifts.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('admin.shifts.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-clock w-4 text-center {{ request()->routeIs('admin.shifts.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Shift Kerja</span>
                 </a>
@@ -258,92 +270,92 @@
                     Portal Karyawan
                 </div>
 
-                <a href="{{ route('employee.dashboard') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.dashboard') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.dashboard') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.dashboard') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-house w-4 text-center {{ request()->routeIs('employee.dashboard') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Dashboard Saya</span>
                 </a>
 
-                <a href="{{ route('employee.attendance.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.attendance.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.attendance.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.attendance.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-camera w-4 text-center {{ request()->routeIs('employee.attendance.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Absensi Kamera & GPS</span>
                 </a>
 
-                <a href="{{ route('employee.leave.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.leave.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.leave.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.leave.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-umbrella-beach w-4 text-center {{ request()->routeIs('employee.leave.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Pengajuan Cuti & SKD</span>
                 </a>
 
-                <a href="{{ route('employee.business-trips.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.business-trips.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.business-trips.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.business-trips.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-plane-departure w-4 text-center {{ request()->routeIs('employee.business-trips.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Tugas Dinas (SPPD)</span>
                 </a>
 
-                <a href="{{ route('employee.shift-swaps.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.shift-swaps.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.shift-swaps.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.shift-swaps.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-clock-rotate-left w-4 text-center {{ request()->routeIs('employee.shift-swaps.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Tukar Shift Kerja</span>
                 </a>
 
-                <a href="{{ route('employee.thr.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.thr.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.thr.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.thr.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-gift w-4 text-center {{ request()->routeIs('employee.thr.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Tunjangan Hari Raya (THR)</span>
                 </a>
 
-                <a href="{{ route('employee.warning-letters.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.warning-letters.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.warning-letters.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.warning-letters.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-triangle-exclamation w-4 text-center {{ request()->routeIs('employee.warning-letters.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Surat Peringatan Saya</span>
                 </a>
 
-                <a href="{{ route('employee.resignations.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.resignations.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.resignations.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.resignations.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-user-xmark w-4 text-center {{ request()->routeIs('employee.resignations.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Resignasi & Paklaring</span>
                 </a>
 
-                <a href="{{ route('employee.overtime.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.overtime.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.overtime.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.overtime.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-business-time w-4 text-center {{ request()->routeIs('employee.overtime.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Pengajuan Lembur</span>
                 </a>
 
-                <a href="{{ route('employee.reimbursements.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.reimbursements.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.reimbursements.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.reimbursements.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-receipt w-4 text-center {{ request()->routeIs('employee.reimbursements.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Klaim Biaya (Reimburse)</span>
                 </a>
 
-                <a href="{{ route('employee.loans.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.loans.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.loans.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.loans.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-hand-holding-dollar w-4 text-center {{ request()->routeIs('employee.loans.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Pinjaman & Kasbon</span>
                 </a>
 
-                <a href="{{ route('employee.performance.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.performance.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.performance.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.performance.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-award w-4 text-center {{ request()->routeIs('employee.performance.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Rapor Kinerja KPI</span>
                 </a>
 
-                <a href="{{ route('employee.payroll.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.payroll.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.payroll.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.payroll.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-file-invoice-dollar w-4 text-center {{ request()->routeIs('employee.payroll.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Slip Gaji Saya</span>
                 </a>
 
-                <a href="{{ route('employee.calendar.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.calendar.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.calendar.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.calendar.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-calendar-days w-4 text-center {{ request()->routeIs('employee.calendar.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Kalender Cuti Tim</span>
                 </a>
 
-                <a href="{{ route('kudos.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('kudos.*') ? 'bg-amber-50 text-amber-800 border-l-4 border-amber-500 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('kudos.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('kudos.*') ? 'bg-amber-50 text-amber-800 border-l-4 border-amber-500 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-trophy w-4 text-center {{ request()->routeIs('kudos.*') ? 'text-amber-500' : 'text-slate-400' }}"></i>
                     <span>Apresiasi (Wall of Fame)</span>
                 </a>
 
-                <a href="{{ route('orgchart.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('orgchart.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('orgchart.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('orgchart.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-sitemap w-4 text-center {{ request()->routeIs('orgchart.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Struktur Organisasi</span>
                 </a>
 
-                <a href="{{ route('employee.assets.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.assets.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.assets.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.assets.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-laptop w-4 text-center {{ request()->routeIs('employee.assets.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Aset yang Dipegang</span>
                 </a>
 
-                <a href="{{ route('employee.trainings.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.trainings.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('employee.trainings.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('employee.trainings.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-graduation-cap w-4 text-center {{ request()->routeIs('employee.trainings.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Katalog Pelatihan</span>
                 </a>
@@ -352,12 +364,12 @@
                     Informasi & Arsip
                 </div>
 
-                <a href="{{ route('announcements.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('announcements.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('announcements.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('announcements.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-bullhorn w-4 text-center {{ request()->routeIs('announcements.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Pengumuman Kantor</span>
                 </a>
 
-                <a href="{{ route('documents.index') }}" class="flex items-center gap-3 px-3.5 py-2 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('documents.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                <a href="{{ route('documents.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs transition-all {{ request()->routeIs('documents.*') ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                     <i class="fa-solid fa-folder-open w-4 text-center {{ request()->routeIs('documents.*') ? 'text-blue-600' : 'text-slate-400' }}"></i>
                     <span>Brankas Berkas Saya</span>
                 </a>
@@ -387,30 +399,42 @@
         </div>
     </aside>
 
-    <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col pl-64 min-h-screen bg-slate-50 relative">
+    <!-- Main Content Area (Full width on mobile, shifted on desktop) -->
+    <div class="flex-1 flex flex-col lg:pl-72 min-h-screen bg-slate-50 relative w-full overflow-x-hidden">
+        
         <!-- Top Navbar -->
-        <header class="h-20 border-b border-slate-200/80 bg-white/90 backdrop-blur-md px-8 flex items-center justify-between sticky top-0 z-20">
-            <div>
-                <h2 class="text-lg font-bold text-slate-900 tracking-tight">@yield('page-title', 'Dashboard')</h2>
-                <p class="text-xs text-slate-500">@yield('page-subtitle', 'Sistem Manajemen Sumber Daya Manusia PT Maju')</p>
+        <header class="h-16 sm:h-20 border-b border-slate-200/80 bg-white/90 backdrop-blur-md px-4 sm:px-8 flex items-center justify-between sticky top-0 z-20">
+            <div class="flex items-center gap-3">
+                <!-- Hamburger Button (Mobile Only) -->
+                <button type="button" onclick="toggleMobileSidebar()" 
+                    class="lg:hidden w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center text-base transition active:scale-95">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-tight">@yield('page-title', 'Dashboard')</h2>
+                    <p class="text-[11px] sm:text-xs text-slate-500 hidden sm:block">@yield('page-subtitle', 'Sistem Manajemen Sumber Daya Manusia PT Maju')</p>
+                </div>
             </div>
-            <div class="flex items-center gap-4">
-                <!-- Date/Time Pill -->
-                <div class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-medium text-slate-600">
+
+            <div class="flex items-center gap-3 sm:gap-4">
+                <!-- Date/Time Pill (Hidden on phone) -->
+                <div class="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-medium text-slate-600">
                     <i class="fa-regular fa-calendar text-blue-600"></i>
                     <span>{{ now()->translatedFormat('l, d F Y') }}</span>
                 </div>
-                <div class="h-6 w-px bg-slate-200"></div>
+
+                <div class="h-6 w-px bg-slate-200 hidden sm:block"></div>
+
                 <div class="text-right">
-                    <p class="text-xs font-bold text-slate-900">{{ Auth::user()->name }}</p>
-                    <p class="text-[11px] text-slate-500 font-mono">{{ Auth::user()->nik }} • {{ Auth::user()->position ?? 'Staff' }}</p>
+                    <p class="text-xs font-bold text-slate-900 truncate max-w-[120px] sm:max-w-none">{{ Auth::user()->name }}</p>
+                    <p class="text-[10px] text-slate-500 font-mono">{{ Auth::user()->nik }}</p>
                 </div>
             </div>
         </header>
 
-        <!-- Main Body -->
-        <main class="flex-1 p-8 space-y-6">
+        <!-- Main Body (With bottom padding for Mobile Navigation Bar) -->
+        <main class="flex-1 p-4 sm:p-8 pb-28 lg:pb-8 space-y-6">
             <!-- Flash Messages -->
             @if(session('success'))
                 <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-start gap-3 shadow-sm">
@@ -448,15 +472,73 @@
         </main>
 
         <!-- Footer -->
-        <footer class="py-4 px-8 border-t border-slate-200/70 bg-white text-center text-xs text-slate-400">
+        <footer class="py-4 px-4 sm:px-8 border-t border-slate-200/70 bg-white text-center text-[11px] sm:text-xs text-slate-400 hidden lg:block">
             &copy; {{ date('Y') }} PT Maju Nusantara HR Management System. Premier Global Enterprise Edition.
         </footer>
     </div>
 
-    <!-- FLOATING VIRTUAL AI HR HELPDESK WIDGET -->
-    <div id="aiHelpdeskContainer" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <!-- NATIVE-STYLE MOBILE BOTTOM NAVIGATION BAR (MOBILE ONLY) -->
+    <div class="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200/90 py-1.5 px-2 z-40 shadow-xl flex items-center justify-around">
+        @if(Auth::user()->role === 'admin_hr')
+            <a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center gap-0.5 py-1 px-2 text-center {{ request()->routeIs('admin.dashboard') ? 'text-blue-600 font-bold' : 'text-slate-500' }}">
+                <i class="fa-solid fa-chart-pie text-base"></i>
+                <span class="text-[10px]">Home</span>
+            </a>
+
+            <a href="{{ route('admin.attendance.index') }}" class="flex flex-col items-center gap-0.5 py-1 px-2 text-center {{ request()->routeIs('admin.attendance.*') ? 'text-blue-600 font-bold' : 'text-slate-500' }}">
+                <i class="fa-solid fa-camera text-base"></i>
+                <span class="text-[10px]">Absensi</span>
+            </a>
+
+            <a href="{{ route('admin.leave.index') }}" class="flex flex-col items-center gap-0.5 py-1 px-2 text-center {{ request()->routeIs('admin.leave.*') ? 'text-blue-600 font-bold' : 'text-slate-500' }}">
+                <i class="fa-solid fa-calendar-check text-base"></i>
+                <span class="text-[10px]">Cuti</span>
+            </a>
+
+            <a href="{{ route('admin.payroll.index') }}" class="flex flex-col items-center gap-0.5 py-1 px-2 text-center {{ request()->routeIs('admin.payroll.*') ? 'text-blue-600 font-bold' : 'text-slate-500' }}">
+                <i class="fa-solid fa-file-invoice-dollar text-base"></i>
+                <span class="text-[10px]">Payroll</span>
+            </a>
+
+            <button type="button" onclick="toggleMobileSidebar()" class="flex flex-col items-center gap-0.5 py-1 px-2 text-center text-slate-500 hover:text-blue-600">
+                <i class="fa-solid fa-grid-2 text-base"></i>
+                <span class="text-[10px]">Menu</span>
+            </button>
+        @else
+            <a href="{{ route('employee.dashboard') }}" class="flex flex-col items-center gap-0.5 py-1 px-2 text-center {{ request()->routeIs('employee.dashboard') ? 'text-blue-600 font-bold' : 'text-slate-500' }}">
+                <i class="fa-solid fa-house text-base"></i>
+                <span class="text-[10px]">Home</span>
+            </a>
+
+            <a href="{{ route('employee.leave.index') }}" class="flex flex-col items-center gap-0.5 py-1 px-2 text-center {{ request()->routeIs('employee.leave.*') ? 'text-blue-600 font-bold' : 'text-slate-500' }}">
+                <i class="fa-solid fa-umbrella-beach text-base"></i>
+                <span class="text-[10px]">Cuti</span>
+            </a>
+
+            <!-- Central Elevated Camera Attendance Button -->
+            <a href="{{ route('employee.attendance.index') }}" class="flex flex-col items-center -mt-5">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-blue-500 text-white flex items-center justify-center text-lg shadow-lg shadow-blue-500/30 border-2 border-white transform active:scale-95 transition">
+                    <i class="fa-solid fa-camera"></i>
+                </div>
+                <span class="text-[10px] font-bold text-blue-600 mt-0.5">Absen</span>
+            </a>
+
+            <a href="{{ route('employee.payroll.index') }}" class="flex flex-col items-center gap-0.5 py-1 px-2 text-center {{ request()->routeIs('employee.payroll.*') ? 'text-blue-600 font-bold' : 'text-slate-500' }}">
+                <i class="fa-solid fa-file-invoice-dollar text-base"></i>
+                <span class="text-[10px]">Gaji</span>
+            </a>
+
+            <button type="button" onclick="toggleMobileSidebar()" class="flex flex-col items-center gap-0.5 py-1 px-2 text-center text-slate-500 hover:text-blue-600">
+                <i class="fa-solid fa-bars text-base"></i>
+                <span class="text-[10px]">Menu</span>
+            </button>
+        @endif
+    </div>
+
+    <!-- FLOATING VIRTUAL AI HR HELPDESK WIDGET (Positioned above bottom nav on mobile) -->
+    <div id="aiHelpdeskContainer" class="fixed bottom-20 lg:bottom-6 right-4 sm:right-6 z-50 flex flex-col items-end">
         <!-- Chat Window (Hidden by default) -->
-        <div id="aiChatWindow" class="hidden w-80 sm:w-96 bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden mb-3 transition-all duration-300 flex-col">
+        <div id="aiChatWindow" class="hidden w-[calc(100vw-2rem)] sm:w-96 max-w-sm bg-white rounded-2xl border border-slate-200 shadow-2xl overflow-hidden mb-3 transition-all duration-300 flex-col">
             <!-- Header -->
             <div class="bg-gradient-to-r from-blue-700 to-slate-900 p-4 text-white flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
@@ -516,14 +598,37 @@
 
         <!-- Floating Trigger Button -->
         <button onclick="toggleAiChat()"
-            class="px-4 py-3 rounded-full bg-gradient-to-r from-blue-600 to-slate-900 hover:from-blue-700 hover:to-slate-800 text-white font-bold text-xs shadow-xl shadow-blue-500/25 flex items-center gap-2.5 transition transform hover:scale-105 active:scale-95">
+            class="px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-blue-600 to-slate-900 hover:from-blue-700 hover:to-slate-800 text-white font-bold text-xs shadow-xl shadow-blue-500/25 flex items-center gap-2 transition transform hover:scale-105 active:scale-95">
             <i class="fa-solid fa-robot text-amber-300 text-sm"></i>
-            <span>Tanya Asisten HR</span>
+            <span class="hidden sm:inline">Tanya Asisten HR</span>
         </button>
     </div>
 
-    <!-- PWA Service Worker Registration -->
+    <!-- Scripts -->
     <script>
+        // Toggle Mobile Sidebar Drawer
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('appSidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+                setTimeout(() => {
+                    backdrop.classList.remove('opacity-0');
+                    backdrop.classList.add('opacity-100');
+                }, 10);
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0');
+                setTimeout(() => {
+                    backdrop.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js').catch(err => {
