@@ -28,7 +28,7 @@ class Attendance extends Model
     protected function casts(): array
     {
         return [
-            'date' => 'date',
+            'date' => 'date:Y-m-d',
             'latitude' => 'decimal:8',
             'longitude' => 'decimal:8',
             'distance_meters' => 'integer',

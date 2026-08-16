@@ -26,7 +26,7 @@ class AttendanceController extends Controller
         $user = Auth::user();
         $today = Carbon::today()->toDateString();
         $todayAttendance = Attendance::where('user_id', $user->id)
-            ->where('date', $today)
+            ->whereDate('date', $today)
             ->first();
 
         $month = $request->input('month', Carbon::now()->format('Y-m'));
@@ -62,7 +62,7 @@ class AttendanceController extends Controller
         $now = Carbon::now();
 
         $existing = Attendance::where('user_id', $user->id)
-            ->where('date', $today)
+            ->whereDate('date', $today)
             ->first();
 
         if ($existing && $existing->time_in) {
@@ -86,12 +86,8 @@ class AttendanceController extends Controller
         $lateThreshold = Carbon::today()->setTime(8, 30, 0);
         $status = $now->greaterThan($lateThreshold) ? 'late' : 'present';
 
-        Attendance::updateOrCreate(
-            [
-                'user_id' => $user->id,
-                'date' => $today,
-            ],
-            [
+        if ($existing) {
+            $existing->update([
                 'time_in' => $now->toTimeString(),
                 'image_in' => $imagePath,
                 'latitude' => $lat,
@@ -100,8 +96,21 @@ class AttendanceController extends Controller
                 'is_office_radius' => $isWithinRadius,
                 'status' => $status,
                 'notes' => $request->input('notes'),
-            ]
-        );
+            ]);
+        } else {
+            Attendance::create([
+                'user_id' => $user->id,
+                'date' => $today,
+                'time_in' => $now->toTimeString(),
+                'image_in' => $imagePath,
+                'latitude' => $lat,
+                'longitude' => $lng,
+                'distance_meters' => $distance,
+                'is_office_radius' => $isWithinRadius,
+                'status' => $status,
+                'notes' => $request->input('notes'),
+            ]);
+        }
 
         $statusLabel = $status === 'late' ? 'Terlambat' : 'Tepat Waktu';
         $locationMsg = $distance !== null ? " (Jarak GPS: {$distance}m)" : "";
@@ -125,7 +134,7 @@ class AttendanceController extends Controller
         $now = Carbon::now();
 
         $attendance = Attendance::where('user_id', $user->id)
-            ->where('date', $today)
+            ->whereDate('date', $today)
             ->first();
 
         if (!$attendance || !$attendance->time_in) {
@@ -138,17 +147,32 @@ class AttendanceController extends Controller
 
         $imagePath = $this->saveBase64Image($request->input('image'), 'clock_out');
 
+        $lat = $request->input('latitude') ?? $attendance->latitude;
+        $lng = $request->input('longitude') ?? $attendance->longitude;
+        $distance = $attendance->distance_meters;
+        $isWithinRadius = $attendance->is_office_radius;
+
+        if ($lat && $lng) {
+            $distance = (int) round($this->calculateDistance($lat, $lng, self::OFFICE_LAT, self::OFFICE_LNG));
+            $isWithinRadius = ($distance <= self::OFFICE_RADIUS_METERS);
+        }
+
         $attendance->update([
             'time_out' => $now->toTimeString(),
             'image_out' => $imagePath,
+            'latitude' => $lat,
+            'longitude' => $lng,
+            'distance_meters' => $distance,
+            'is_office_radius' => $isWithinRadius,
         ]);
 
+        $locationMsg = $distance !== null ? " (Jarak GPS: {$distance}m)" : "";
         return redirect()->route('employee.attendance.index')
-            ->with('success', "Absen Pulang berhasil dicatat! Jam: {$now->format('H:i:s')}.");
+            ->with('success', "Absen Pulang berhasil dicatat pada {$now->format('H:i:s')}{$locationMsg}.");
     }
 
     /**
-     * Admin Attendance Logs & Photo Verification
+     * Show Attendance Logs for Admin
      */
     public function adminIndex(Request $request)
     {
@@ -157,10 +181,10 @@ class AttendanceController extends Controller
         $status = $request->input('status');
         $search = $request->input('search');
 
-        $departments = Department::orderBy('name')->get();
+        $departments = Department::all();
 
         $query = Attendance::with(['user.department'])
-            ->where('date', $date);
+            ->whereDate('date', $date);
 
         if ($departmentId) {
             $query->whereHas('user', function ($q) use ($departmentId) {
